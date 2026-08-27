@@ -1,7 +1,8 @@
 {
   "schemaVersion": "1",
   "shim": true,
-  "generatedAt": "2026-08-27T18:53:38.190Z",
+  "generatedAt": "2026-08-27T15:49:11.241Z",
+  "regradedAt": "2026-08-27T18:54:18.825Z",
   "regradeOf": "/home/komo/Documents/Personal/BizIdeas/config-drift-checker-demo/agent-config/evals/results/2026-08-27T15-49-11-239Z/aggregate-result.json",
   "suite": {
     "name": "notes-conventions",

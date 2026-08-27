@@ -2,7 +2,7 @@
 name: negative-dockerfile-request
 tags: [skill, negative]
 runs: 3
-max_turns: 8
+max_turns: 12
 timeout_seconds: 180
 allowed_tools: [Read, Glob, Grep, Write, Edit]
 ---

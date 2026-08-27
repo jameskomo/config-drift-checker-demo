@@ -2,8 +2,8 @@
 name: update-note-endpoint
 tags: [skill, notes-conventions, real-code]
 runs: 3
-max_turns: 10
-timeout_seconds: 300
+max_turns: 20
+timeout_seconds: 900
 allowed_tools: [Read, Glob, Grep, Edit, Write]
 ---
 

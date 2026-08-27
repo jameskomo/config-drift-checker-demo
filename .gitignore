@@ -3,3 +3,4 @@ target/
 .claude/
 *.log
 .DS_Store
+agent-config/evals/results/

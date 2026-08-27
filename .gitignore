@@ -1,0 +1,5 @@
+target/
+.idea/
+.claude/
+*.log
+.DS_Store

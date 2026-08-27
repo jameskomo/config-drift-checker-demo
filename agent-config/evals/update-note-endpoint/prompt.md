@@ -1,4 +1,5 @@
 ---
+description: Proves the conventions skill and CLAUDE.md shape a real change to the code: the agent must add an update endpoint across the service, DTOs and controller while keeping the envelope, records and constructor injection. Exercises the notes-conventions skill.
 name: update-note-endpoint
 tags: [skill, notes-conventions, real-code]
 runs: 3

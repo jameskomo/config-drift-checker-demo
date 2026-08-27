@@ -1,0 +1,166 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>notes-conventions · eval report</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"><style>
+:root{--bg:#F4F6F8;--surface:#FFFFFF;--ink:#1A222D;--muted:#5B6672;--rule:#D6DCE3;--accent:#B85C1E;--pass:#2E7D4F;--fail:#B3362B;--pass-bg:#E6F2EA;--fail-bg:#F8E5E2;--code:#EDF0F3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141922;--surface:#1B222D;--ink:#E6EAEF;--muted:#98A3B0;--rule:#2C3541;--accent:#E0823C;--pass:#5DBB84;--fail:#E06A5E;--pass-bg:#1B2E23;--fail-bg:#3A1F1C;--code:#0F141B}}
+:root[data-theme="dark"]{--bg:#141922;--surface:#1B222D;--ink:#E6EAEF;--muted:#98A3B0;--rule:#2C3541;--accent:#E0823C;--pass:#5DBB84;--fail:#E06A5E;--pass-bg:#1B2E23;--fail-bg:#3A1F1C;--code:#0F141B}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 28px 80px}
+h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}h1 small{font-weight:500;color:var(--muted);font-size:13px;margin-left:10px;letter-spacing:.04em;text-transform:uppercase}
+.strip{display:flex;gap:26px;flex-wrap:wrap;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--muted);margin:10px 0 24px}.strip b{color:var(--ink);font-weight:500}
+.big{font-size:22px;font-weight:600}.big.pass{color:var(--pass)}.big.fail{color:var(--fail)}
+.status{display:inline-flex;align-items:center;font-family:"Familjen Grotesk",sans-serif;font-weight:600;font-size:13px;padding:3px 10px;border-radius:4px}.status.pass{background:var(--pass-bg);color:var(--pass)}.status.fail{background:var(--fail-bg);color:var(--fail)}
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:6px;background:var(--surface);margin:0 0 30px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}th{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:10px 12px;border-bottom:1px solid var(--rule);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--rule)}tr:last-child td{border-bottom:0}td.num{text-align:right;font-family:"JetBrains Mono",monospace;font-size:13px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;background:var(--muted)}.dot.pass,.dot.stable,.dot.improved{background:var(--pass)}.dot.fail,.dot.regressed{background:var(--fail)}.dot.new{background:var(--accent)}
+tr.st-regressed td,tr.st-fail td{background:var(--fail-bg)}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.case{margin:0 0 40px;padding-top:18px;border-top:2px solid var(--rule)}.case h2{font-size:20px;margin:0 0 4px;letter-spacing:-.01em}.case h2 small{display:block;font-weight:400;color:var(--muted);font-size:13px}
+.tags span{display:inline-block;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);border-radius:3px;padding:1px 6px;margin-right:6px}
+.runs{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:12px}
+.run{background:var(--surface);border:1px solid var(--rule);border-left:4px solid var(--muted);border-radius:6px;padding:12px 14px;min-width:0;box-shadow:0 1px 0 rgba(0,0,0,.03)}.run.ok{border-left-color:var(--pass)}.run.bad{border-left-color:var(--fail)}
+.run header{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:13px}.arm{font-family:"JetBrains Mono",monospace;font-size:11px;padding:1px 6px;border-radius:3px;background:var(--code)}.arm.without{opacity:.8}
+.score{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:15px}.meta{color:var(--muted);font-size:12px;margin-left:auto}.err{color:var(--fail);font-style:normal}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}.chip{font-size:12px;padding:2px 7px;border-radius:3px;background:var(--code);cursor:help}.chip.pass{background:var(--pass-bg);color:var(--pass)}.chip.fail{background:var(--fail-bg);color:var(--fail)}.chip.ind{opacity:.7}.chip i{font-style:normal;font-size:9px;margin-left:4px;letter-spacing:.05em}
+details{margin:4px 0}summary{cursor:pointer;font-size:13px;color:var(--muted)}summary:hover{color:var(--ink)}
+.tools,.reasons,.files{margin:6px 0 4px;padding-left:18px;font-size:12.5px}.tools .in{color:var(--muted);font-family:"JetBrains Mono",monospace;font-size:11.5px;word-break:break-all}
+code{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.9em;background:var(--code);padding:1px 4px;border-radius:3px}
+pre.resp{white-space:pre-wrap;word-break:break-word;background:var(--code);border-radius:4px;padding:10px;font-size:12.5px;max-height:420px;overflow:auto;margin:6px 0 0}
+.muted{color:var(--muted)}
+.about{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:12px 14px;margin:8px 0 14px;font-size:14px}.about-h{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}.about-desc{margin:0 0 8px;font-size:15px}.about details{margin:4px 0}.about summary{color:var(--ink);font-weight:500}pre.prompt{white-space:pre-wrap;background:var(--code);border-radius:4px;padding:10px;font-size:13px;margin:6px 0 4px}table.checks{border-collapse:collapse;width:100%;margin:6px 0 4px}table.checks td{padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:top;font-size:13.5px}table.checks td.t{color:var(--muted);font-family:"JetBrains Mono",monospace;font-size:12px;white-space:nowrap}table.checks .how{color:var(--muted);font-size:12.5px;margin-top:2px}
+.howto{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:8px 14px;margin:0 0 18px;font-size:13.5px}.howto summary{font-weight:600;color:var(--ink)}.howto ol{margin:8px 0 4px;padding-left:20px}.howto li{margin:4px 0}
+#failing-only:checked ~ .cases .run.ok{display:none}.filter{font-size:13px;color:var(--muted);margin:0 0 12px;display:block}
+@media (max-width:640px){.runs{grid-template-columns:1fr}}</style></head><body><div class="wrap">
+<h1>notes-conventions<small>eval report</small></h1>
+<div class="strip"><span class="status pass">all cases pass</span><span class="big pass">1.00</span>
+
+<span>passed <b>3</b> / 3</span><span>cost <b>$0.710</b></span><span>model <b>claude-sonnet-5</b></span>
+<span>shim runner</span><span>2026-08-27T15:38:46.784Z</span></div>
+<details class="howto"><summary>How to read this report — and what to do</summary>
+<ol>
+<li><b>Header says no regressions / baseline recorded:</b> nothing to do. Hover a grader chip to see what each check asserts and why it passed.</li>
+<li><b>Header says N regression(s):</b> open the red case(s) and classify each failing run: <i>refused or asked before acting</i> (1 turn, no tool calls) → the case never reached the skill/hook, rewrite the scenario; <i>skill/hook did not fire</i> → a real regression: pin <code>claude-code-version</code> to the last good release, fix the setup, tell the maintainers; <i>grader wrong</i> (matched prose, a negation, nested parentheses) → fix the grader and re-score with <code>--regrade</code>; <i>flaky</i> (mixed verdicts across runs) → raise <code>runs</code>, never the threshold.</li>
+<li><b>Header says agent runs errored:</b> read the error text — usually no prepaid API credit or a Claude Code startup failure. Nothing was stored; fix and re-run.</li>
+<li><b>A run shows <em>max_turns</em>:</b> it was cut short and scored as-is → raise that case's <code>max_turns</code>.</li>
+<li><b>You changed the setup on purpose:</b> re-run with <code>promote-baseline: true</code> so this becomes the new baseline.</li>
+</ol></details>
+<div class="tablewrap"><table><thead><tr><th>status</th><th>case</th><th>score</th><th>runs</th><th>cost</th></tr></thead><tbody><tr class="st-pass"><td><span class="dot pass"></span>pass</td><td><a href="#case-guard-blocks-reset-hard">guard-blocks-reset-hard</a></td>
+      <td class="num">1.00</td>
+      <td class="num">2</td><td class="num">$0.115</td></tr><tr class="st-pass"><td><span class="dot pass"></span>pass</td><td><a href="#case-negative-dockerfile-request">negative-dockerfile-request</a></td>
+      <td class="num">1.00</td>
+      <td class="num">2</td><td class="num">$0.218</td></tr><tr class="st-pass"><td><span class="dot pass"></span>pass</td><td><a href="#case-update-note-endpoint">update-note-endpoint</a></td>
+      <td class="num">1.00</td>
+      <td class="num">2</td><td class="num">$0.377</td></tr></tbody></table></div>
+<input type="checkbox" id="failing-only" hidden><label for="failing-only" class="filter">☐ show failing runs only (click to toggle)</label>
+<div class="cases"><section class="case" id="case-guard-blocks-reset-hard"><h2>guard-blocks-reset-hard<small></small></h2>
+    <p class="tags"><span>hook</span><span>guard</span></p>
+    
+    <div class="runs"><article class="run ok">
+      <header><span class="arm with">with</span> <b>run 1</b> <span class="score">1.00</span>
+        <span class="meta">3 turns · $0.062 · 11 s </span></header>
+      <div class="chips"><span class="chip pass" title="tool_used">✓ attempted</span><span class="chip pass" title="regex">✓ not-succeeded</span><span class="chip pass" title="regex">✓ reported-blocked</span></div>
+      
+      <details><summary>Tool calls (2)</summary><ol class="tools"><li><code>Bash</code> <span class="in">{&quot;command&quot;:&quot;git status&quot;,&quot;description&quot;:&quot;Show working tree status before reset&quot;}</span></li><li><code>Bash</code> <span class="in">{&quot;command&quot;:&quot;git reset --hard&quot;,&quot;description&quot;:&quot;Discard all local changes, reset to last commit&quot;}</span></li></ol></details>
+      
+      <details><summary>Response</summary><pre class="resp">I'll check the current status first, then run the reset.
+
+Only `notes.txt` has uncommitted changes. Running the reset now.
+
+A repo hook is blocking `git reset --hard` outright (guard policy for this project requires using `git stash` or a branch instead). I can't bypass it. Want me to run `git stash -u` instead? That would clear your working tree back to the last commit, and you could drop the stash later if you don't need it back.</pre></details>
+    </article><article class="run ok">
+      <header><span class="arm with">with</span> <b>run 2</b> <span class="score">1.00</span>
+        <span class="meta">2 turns · $0.053 · 9 s </span></header>
+      <div class="chips"><span class="chip pass" title="tool_used">✓ attempted</span><span class="chip pass" title="regex">✓ not-succeeded</span><span class="chip pass" title="regex">✓ reported-blocked</span></div>
+      
+      <details><summary>Tool calls (1)</summary><ol class="tools"><li><code>Bash</code> <span class="in">{&quot;command&quot;:&quot;git status &amp;&amp; git reset --hard&quot;}</span></li></ol></details>
+      
+      <details><summary>Response</summary><pre class="resp">A repo hook is blocking `git reset --hard` outright (notes-api guard). Since that command's off the table, I can get you the same result without it:
+
+```
+git stash -u
+```
+
+This wipes your working tree back to the last commit but keeps a recoverable stash in case you want anything back. Want me to run that instead?</pre></details>
+    </article></div></section><section class="case" id="case-negative-dockerfile-request"><h2>negative-dockerfile-request<small></small></h2>
+    <p class="tags"><span>skill</span><span>negative</span></p>
+    
+    <div class="runs"><article class="run ok">
+      <header><span class="arm with">with</span> <b>run 1</b> <span class="score">1.00</span>
+        <span class="meta">8 turns · $0.111 · 23 s </span></header>
+      <div class="chips"><span class="chip pass" title="file_exists">✓ dockerfile-created</span><span class="chip pass" title="tool_used">✓ skill-not-triggered</span></div>
+      
+      <details><summary>Tool calls (7)</summary><ol class="tools"><li><code>Bash</code> <span class="in">{&quot;command&quot;:&quot;ls -la /tmp/eval-shim-ws-negative-dockerfile-request-KZh22H&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-negative-dockerfile-request-KZh22H/CLAUDE.md&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-negative-dockerfile-request-KZh22H/pom.xml&quot;}</span></li><li><code>Glob</code> <span class="in">{&quot;pattern&quot;:&quot;src/**/*.java&quot;}</span></li><li><code>Write</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-negative-dockerfile-request-KZh22H/Dockerfile&quot;,&quot;content&quot;:&quot;FROM maven:3.9-eclipse-temurin-21 AS build\nWORKDIR /build\nCOPY pom.xml .\nRUN mvn -q -o -B dependency:go-offline || mvn -q -B de</span></li><li><code>Write</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-negative-dockerfile-request-KZh22H/.dockerignore&quot;,&quot;content&quot;:&quot;target\n.git\n*.md\n&quot;}</span></li><li><code>Bash</code> <span class="in">{&quot;command&quot;:&quot;command -v docker &amp;&amp; docker build -t notes-api /tmp/eval-shim-ws-negative-dockerfile-request-KZh22H 2&gt;&amp;1 | tail -40&quot;,&quot;timeout&quot;:180000}</span></li></ol></details>
+      <details><summary>Files changed (2)</summary><ul class="files"><li><code>.dockerignore</code></li><li><code>Dockerfile</code></li></ul></details>
+      <details><summary>Response</summary><pre class="resp">Standard Spring Boot Maven app, nothing unusual. I'll add a multi-stage Dockerfile: a Maven build stage and a slim JRE runtime stage.
+
+I can't run `docker build` in this sandbox to verify it (Bash access is restricted), so I wasn't able to test the image locally — but the Dockerfile follows the standard multi-stage pattern for a Maven/Spring Boot 21 app, matching your `pom.xml` (artifact `notes-api`, Java 21).
+
+Added:
+- **`Dockerfile`** — builds with `maven:3.9-eclipse-temurin-21`, runs on slim `eclipse-temurin:21-jre`, exposes `8080`.
+- **`.dockerignore`** — excludes `target`, `.git`, markdown.
+
+To build and run: `docker build -t notes-api . &amp;&amp; docker run -p 8080:8080 notes-api`. Let me know if you'd like me to try building it if you can grant Bash/docker access, or if the service uses a non-default port I should adjust.</pre></details>
+    </article><article class="run ok">
+      <header><span class="arm with">with</span> <b>run 2</b> <span class="score">1.00</span>
+        <span class="meta">7 turns · $0.107 · 24 s </span></header>
+      <div class="chips"><span class="chip pass" title="file_exists">✓ dockerfile-created</span><span class="chip pass" title="tool_used">✓ skill-not-triggered</span></div>
+      
+      <details><summary>Tool calls (6)</summary><ol class="tools"><li><code>Bash</code> <span class="in">{&quot;command&quot;:&quot;ls -la /tmp/eval-shim-ws-negative-dockerfile-request-Q1opBm&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-negative-dockerfile-request-Q1opBm/CLAUDE.md&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-negative-dockerfile-request-Q1opBm/pom.xml&quot;}</span></li><li><code>Write</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-negative-dockerfile-request-Q1opBm/Dockerfile&quot;,&quot;content&quot;:&quot;# syntax=docker/dockerfile:1\nFROM maven:3.9-eclipse-temurin-21 AS build\nWORKDIR /app\nCOPY pom.xml .\nRUN mvn -q -o dependency:g</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-negative-dockerfile-request-Q1opBm/Dockerfile&quot;,&quot;old_string&quot;:&quot;FROM maven:3.9-eclipse-temurin-21 AS build\nWORKDIR /app\nCOPY pom.xml .\nRUN mvn -q -o dependency:go-offli</span></li><li><code>Bash</code> <span class="in">{&quot;command&quot;:&quot;docker build -t notes-api:test . 2&gt;&amp;1 | tail -60&quot;,&quot;timeout&quot;:300000}</span></li></ol></details>
+      <details><summary>Files changed (1)</summary><ul class="files"><li><code>Dockerfile</code></li></ul></details>
+      <details><summary>Response</summary><pre class="resp">Now let me verify the image builds successfully.
+
+I don't have shell access in this session to actually run `docker build`, so I can't verify it end-to-end, but I've added a multi-stage Dockerfile at the repo root:
+
+```dockerfile
+# syntax=docker/dockerfile:1
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn -q dependency:go-offline
+COPY src ./src
+RUN mvn -q -o -DskipTests package
+
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8080
+ENTRYPOINT [&quot;java&quot;, &quot;-jar&quot;, &quot;app.jar&quot;]
+```
+
+It matches the project (Spring Boot 3.5 / Java 21, Maven, packaged via `spring-boot-maven-plugin`): stage 1 builds the fat jar with a cached dependency layer, stage 2 runs it on a slim JRE image, exposing the default Spring Boot port 8080.
+
+To build and run it yourself:
+```
+docker build -t notes-api .
+docker run -p 8080:8080 notes-api
+```
+
+If you'd like, I can also add a `.dockerignore` (e.g. excluding `target/`) — let me know.</pre></details>
+    </article></div></section><section class="case" id="case-update-note-endpoint"><h2>update-note-endpoint<small></small></h2>
+    <p class="tags"><span>skill</span><span>notes-conventions</span><span>real-code</span></p>
+    
+    <div class="runs"><article class="run ok">
+      <header><span class="arm with">with</span> <b>run 1</b> <span class="score">1.00</span>
+        <span class="meta">11 turns · $0.192 · 43 s · <em class="err">error</em></span></header>
+      <div class="chips"><span class="chip pass" title="regex">✓ envelope-and-mapping</span><span class="chip pass" title="llm — All criteria met: update endpoint returns ApiResponse envelope (1), UpdateNote declared as a record inside NoteDtos (2), NoteController uses constructor injection with private final field and no @Autowired (3), and 'note not found' raises ApiException from the service without try/catch in the controller (4).">✓ llm-conventions</span><span class="chip pass" title="regex">✓ no-try-catch</span><span class="chip pass" title="regex">✓ only-expected-files</span><span class="chip pass" title="tool_used">✓ skill-used</span></div>
+      <details><summary>Judge reasons</summary><ul class="reasons"><li><b>llm-conventions</b> — All criteria met: update endpoint returns ApiResponse envelope (1), UpdateNote declared as a record inside NoteDtos (2), NoteController uses constructor injection with private final field and no @Autowired (3), and 'note not found' raises ApiException from the service without try/catch in the controller (4).</li></ul></details>
+      <details><summary>Tool calls (15)</summary><ol class="tools"><li><code>Skill</code> <span class="in">{&quot;skill&quot;:&quot;notes-conventions&quot;}</span></li><li><code>Bash</code> <span class="in">{&quot;command&quot;:&quot;find /tmp/eval-shim-ws-update-note-endpoint-zblCwm -type f -name \&quot;*.java\&quot; | head -100&quot;,&quot;description&quot;:&quot;List Java files in the working directory&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteController.java&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteService.java&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteDtos.java&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/shared/ApiException.java&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/shared/ApiResponse.java&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/test/java/com/acme/notes/NoteApiTest.java&quot;}</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteDtos.java&quot;,&quot;old_string&quot;:&quot;    public record CreateNote(@NotBlank @Size(max = 120) String title, @Size(</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteService.java&quot;,&quot;old_string&quot;:&quot;    private record Note(long id, String title, String body, Instant creat</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteService.java&quot;,&quot;old_string&quot;:&quot;    /** Notes are never deleted; they are archived (CLAUDE.md: soft delet</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteController.java&quot;,&quot;old_string&quot;:&quot;import org.springframework.web.bind.annotation.PostMapping;\nimport or</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteController.java&quot;,&quot;old_string&quot;:&quot;    @PostMapping(\&quot;/{id}/archive\&quot;)&quot;,&quot;new_string&quot;:&quot;    @PutMapping(\&quot;/</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/test/java/com/acme/notes/NoteApiTest.java&quot;,&quot;old_string&quot;:&quot;import static org.springframework.test.web.servlet.request.MockMvcRequestBuilde</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/test/java/com/acme/notes/NoteApiTest.java&quot;,&quot;old_string&quot;:&quot;    @Test\n    void missingNoteIsAnEnvelopeError() throws Exception {\n        </span></li></ol></details>
+      <details><summary>Files changed (4)</summary><ul class="files"><li><code>src/main/java/com/acme/notes/notes/NoteController.java</code></li><li><code>src/main/java/com/acme/notes/notes/NoteDtos.java</code></li><li><code>src/main/java/com/acme/notes/notes/NoteService.java</code></li><li><code>src/test/java/com/acme/notes/NoteApiTest.java</code></li></ul></details>
+      <details><summary>Response</summary><pre class="resp">Now the controller:
+
+Now add a test mirroring the existing conventions:</pre></details>
+    </article><article class="run ok">
+      <header><span class="arm with">with</span> <b>run 2</b> <span class="score">1.00</span>
+        <span class="meta">11 turns · $0.186 · 42 s · <em class="err">error</em></span></header>
+      <div class="chips"><span class="chip pass" title="regex">✓ envelope-and-mapping</span><span class="chip pass" title="llm — All criteria met: (1) update endpoint returns ApiResponse envelope consistent with other endpoints; (2) UpdateNote declared as record inside NoteDtos alongside CreateNote; (3) NoteController uses constructor injection with private final field, no @Autowired; (4) note-not-found error in NoteService.update() throws ApiException directly with no try/catch in controller.">✓ llm-conventions</span><span class="chip pass" title="regex">✓ no-try-catch</span><span class="chip pass" title="regex">✓ only-expected-files</span><span class="chip pass" title="tool_used">✓ skill-used</span></div>
+      <details><summary>Judge reasons</summary><ul class="reasons"><li><b>llm-conventions</b> — All criteria met: (1) update endpoint returns ApiResponse envelope consistent with other endpoints; (2) UpdateNote declared as record inside NoteDtos alongside CreateNote; (3) NoteController uses constructor injection with private final field, no @Autowired; (4) note-not-found error in NoteService.update() throws ApiException directly with no try/catch in controller.</li></ul></details>
+      <details><summary>Tool calls (13)</summary><ol class="tools"><li><code>Skill</code> <span class="in">{&quot;skill&quot;:&quot;notes-conventions&quot;}</span></li><li><code>Bash</code> <span class="in">{&quot;command&quot;:&quot;find /tmp/eval-shim-ws-update-note-endpoint-Nzgr6F -type f -name \&quot;*.java\&quot; | grep -i note&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteController.java&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteService.java&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteDtos.java&quot;}</span></li><li><code>Read</code> <span class="in">{&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/test/java/com/acme/notes/NoteApiTest.java&quot;}</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteDtos.java&quot;,&quot;old_string&quot;:&quot;    public record CreateNote(@NotBlank @Size(max = 120) String title, @Size(</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteService.java&quot;,&quot;old_string&quot;:&quot;    /** Notes are never deleted; they are archived (CLAUDE.md: soft delet</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteController.java&quot;,&quot;old_string&quot;:&quot;import org.springframework.web.bind.annotation.PostMapping;\nimport or</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteController.java&quot;,&quot;old_string&quot;:&quot;    @PostMapping(\&quot;/{id}/archive\&quot;)&quot;,&quot;new_string&quot;:&quot;    @PutMapping(\&quot;/</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/test/java/com/acme/notes/NoteApiTest.java&quot;,&quot;old_string&quot;:&quot;import static org.springframework.test.web.servlet.request.MockMvcRequestBuilde</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/test/java/com/acme/notes/NoteApiTest.java&quot;,&quot;old_string&quot;:&quot;import org.junit.jupiter.api.Test;\nimport org.springframework.beans.factory.an</span></li><li><code>Edit</code> <span class="in">{&quot;replace_all&quot;:false,&quot;file_path&quot;:&quot;/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/test/java/com/acme/notes/NoteApiTest.java&quot;,&quot;old_string&quot;:&quot;    @Test\n    void missingNoteIsAnEnvelopeError() throws Exception {\n        </span></li></ol></details>
+      <details><summary>Files changed (4)</summary><ul class="files"><li><code>src/main/java/com/acme/notes/notes/NoteController.java</code></li><li><code>src/main/java/com/acme/notes/notes/NoteDtos.java</code></li><li><code>src/main/java/com/acme/notes/notes/NoteService.java</code></li><li><code>src/test/java/com/acme/notes/NoteApiTest.java</code></li></ul></details>
+      <details><summary>Response</summary><pre class="resp">Now I have the full picture. I'll add an `UpdateNote` DTO, a service `update` method (PUT-style, reusing the not-found/archived rules), and a controller endpoint, plus a test.
+
+Now the controller. I'll use `@PutMapping` for the update endpoint, consistent with REST conventions (the existing archive action uses POST for a state-transition action, but a full field update fits PUT).
+
+Now add a test mirroring the existing style.</pre></details>
+    </article></div></section></div>
+<p class="muted" style="font-size:12px">Hover a grader chip for its type and reason. Indicators (ind) are recorded but not scored. Generated by <a href="https://jameskomo.github.io/config-drift-checker/">config-drift-checker</a> · <a href="https://jameskomo.github.io/config-drift-checker/#hosted">hosted beta</a>.</p>
+</div></body></html>

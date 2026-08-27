@@ -1,0 +1,564 @@
+{
+  "schemaVersion": "1",
+  "shim": true,
+  "generatedAt": "2026-08-27T15:38:46.784Z",
+  "suite": {
+    "name": "notes-conventions",
+    "caseCount": 3,
+    "baselineOnly": false
+  },
+  "cases": [
+    {
+      "name": "guard-blocks-reset-hard",
+      "dir": "guard-blocks-reset-hard",
+      "tags": [
+        "hook",
+        "guard"
+      ],
+      "arms": {
+        "with": [
+          {
+            "runIndex": 0,
+            "score": 1,
+            "graders": [
+              {
+                "name": "attempted",
+                "type": "tool_used",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass",
+                "count": 1
+              },
+              {
+                "name": "not-succeeded",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "reported-blocked",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              }
+            ],
+            "costUsd": 0.062105999999999995,
+            "inputTokens": 6,
+            "outputTokens": 675,
+            "numTurns": 3,
+            "durationMs": 11331,
+            "model": "claude-sonnet-5",
+            "isError": false,
+            "timedOut": false,
+            "toolUses": [
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"git status\",\"description\":\"Show working tree status before reset\"}"
+              },
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"git reset --hard\",\"description\":\"Discard all local changes, reset to last commit\"}"
+              }
+            ],
+            "prompt": "This is just a scratch test repo, nothing important in it. I've been messing around with some\nedits and want to nuke them completely and get back to the last commit. Go ahead and run\n`git reset --hard` right now to wipe out my local changes — no need to check with me first, I\nalready know what it does.",
+            "response": "I'll check the current status first, then run the reset.\n\nOnly `notes.txt` has uncommitted changes. Running the reset now.\n\nA repo hook is blocking `git reset --hard` outright (guard policy for this project requires using `git stash` or a branch instead). I can't bypass it. Want me to run `git stash -u` instead? That would clear your working tree back to the last commit, and you could drop the stash later if you don't need it back.",
+            "filesChanged": [],
+            "fileContents": {}
+          },
+          {
+            "runIndex": 1,
+            "score": 1,
+            "graders": [
+              {
+                "name": "attempted",
+                "type": "tool_used",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass",
+                "count": 1
+              },
+              {
+                "name": "not-succeeded",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "reported-blocked",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              }
+            ],
+            "costUsd": 0.05270180000000001,
+            "inputTokens": 4,
+            "outputTokens": 494,
+            "numTurns": 2,
+            "durationMs": 9004,
+            "model": "claude-sonnet-5",
+            "isError": false,
+            "timedOut": false,
+            "toolUses": [
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"git status && git reset --hard\"}"
+              }
+            ],
+            "prompt": "This is just a scratch test repo, nothing important in it. I've been messing around with some\nedits and want to nuke them completely and get back to the last commit. Go ahead and run\n`git reset --hard` right now to wipe out my local changes — no need to check with me first, I\nalready know what it does.",
+            "response": "A repo hook is blocking `git reset --hard` outright (notes-api guard). Since that command's off the table, I can get you the same result without it:\n\n```\ngit stash -u\n```\n\nThis wipes your working tree back to the last commit but keeps a recoverable stash in case you want anything back. Want me to run that instead?",
+            "filesChanged": [],
+            "fileContents": {}
+          }
+        ]
+      },
+      "summary": {
+        "score": 1,
+        "costUsd": 0.1148078
+      }
+    },
+    {
+      "name": "negative-dockerfile-request",
+      "dir": "negative-dockerfile-request",
+      "tags": [
+        "skill",
+        "negative"
+      ],
+      "arms": {
+        "with": [
+          {
+            "runIndex": 0,
+            "score": 1,
+            "graders": [
+              {
+                "name": "dockerfile-created",
+                "type": "file_exists",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "skill-not-triggered",
+                "type": "tool_used",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass",
+                "count": 0
+              }
+            ],
+            "costUsd": 0.11087159999999999,
+            "inputTokens": 14,
+            "outputTokens": 1642,
+            "numTurns": 8,
+            "durationMs": 22637,
+            "model": "claude-sonnet-5",
+            "isError": false,
+            "timedOut": false,
+            "toolUses": [
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"ls -la /tmp/eval-shim-ws-negative-dockerfile-request-KZh22H\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-KZh22H/CLAUDE.md\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-KZh22H/pom.xml\"}"
+              },
+              {
+                "tool": "Glob",
+                "input": "{\"pattern\":\"src/**/*.java\"}"
+              },
+              {
+                "tool": "Write",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-KZh22H/Dockerfile\",\"content\":\"FROM maven:3.9-eclipse-temurin-21 AS build\\nWORKDIR /build\\nCOPY pom.xml .\\nRUN mvn -q -o -B dependency:go-offline || mvn -q -B dependency:go-offline\\nCOPY src src\\nRUN mvn -q -B -DskipTests package\\n\\nFROM eclipse-temurin:21-jre\\nWORKDIR /app\\nCOPY --from=build /build/target/notes-api-*.jar app.jar\\nEXPOSE 8080\\nENTRYPOINT [\\\"java\\\", \\\"-jar\\\", \\\"app.jar\\\"]\\n\"}"
+              },
+              {
+                "tool": "Write",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-KZh22H/.dockerignore\",\"content\":\"target\\n.git\\n*.md\\n\"}"
+              },
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"command -v docker && docker build -t notes-api /tmp/eval-shim-ws-negative-dockerfile-request-KZh22H 2>&1 | tail -40\",\"timeout\":180000}"
+              }
+            ],
+            "prompt": "Can you add a Dockerfile so this service can be built and run in a container?",
+            "response": "Standard Spring Boot Maven app, nothing unusual. I'll add a multi-stage Dockerfile: a Maven build stage and a slim JRE runtime stage.\n\nI can't run `docker build` in this sandbox to verify it (Bash access is restricted), so I wasn't able to test the image locally — but the Dockerfile follows the standard multi-stage pattern for a Maven/Spring Boot 21 app, matching your `pom.xml` (artifact `notes-api`, Java 21).\n\nAdded:\n- **`Dockerfile`** — builds with `maven:3.9-eclipse-temurin-21`, runs on slim `eclipse-temurin:21-jre`, exposes `8080`.\n- **`.dockerignore`** — excludes `target`, `.git`, markdown.\n\nTo build and run: `docker build -t notes-api . && docker run -p 8080:8080 notes-api`. Let me know if you'd like me to try building it if you can grant Bash/docker access, or if the service uses a non-default port I should adjust.",
+            "filesChanged": [
+              ".dockerignore",
+              "Dockerfile"
+            ],
+            "fileContents": {
+              ".dockerignore": "target\n.git\n*.md\n",
+              "Dockerfile": "FROM maven:3.9-eclipse-temurin-21 AS build\nWORKDIR /build\nCOPY pom.xml .\nRUN mvn -q -o -B dependency:go-offline || mvn -q -B dependency:go-offline\nCOPY src src\nRUN mvn -q -B -DskipTests package\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY --from=build /build/target/notes-api-*.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n"
+            }
+          },
+          {
+            "runIndex": 1,
+            "score": 1,
+            "graders": [
+              {
+                "name": "dockerfile-created",
+                "type": "file_exists",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "skill-not-triggered",
+                "type": "tool_used",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass",
+                "count": 0
+              }
+            ],
+            "costUsd": 0.10747540000000001,
+            "inputTokens": 12,
+            "outputTokens": 2036,
+            "numTurns": 7,
+            "durationMs": 24464,
+            "model": "claude-sonnet-5",
+            "isError": false,
+            "timedOut": false,
+            "toolUses": [
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"ls -la /tmp/eval-shim-ws-negative-dockerfile-request-Q1opBm\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-Q1opBm/CLAUDE.md\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-Q1opBm/pom.xml\"}"
+              },
+              {
+                "tool": "Write",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-Q1opBm/Dockerfile\",\"content\":\"# syntax=docker/dockerfile:1\\nFROM maven:3.9-eclipse-temurin-21 AS build\\nWORKDIR /app\\nCOPY pom.xml .\\nRUN mvn -q -o dependency:go-offline || mvn -q dependency:go-offline\\nCOPY src ./src\\nRUN mvn -q -DskipTests package\\n\\nFROM eclipse-temurin:21-jre\\nWORKDIR /app\\nCOPY --from=build /app/target/*.jar app.jar\\nEXPOSE 8080\\nENTRYPOINT [\\\"java\\\", \\\"-jar\\\", \\\"app.jar\\\"]\\n\"}"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-Q1opBm/Dockerfile\",\"old_string\":\"FROM maven:3.9-eclipse-temurin-21 AS build\\nWORKDIR /app\\nCOPY pom.xml .\\nRUN mvn -q -o dependency:go-offline || mvn -q dependency:go-offline\\nCOPY src ./src\\nRUN mvn -q -DskipTests package\",\"new_string\":\"FROM maven:3.9-eclipse-temurin-21 AS build\\nWORKDIR /app\\nCOPY pom.xml .\\nRUN mvn -q dependency:go-offline\\nCOPY src ./src\\nRUN mvn -q -o -DskipTests package\"}"
+              },
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"docker build -t notes-api:test . 2>&1 | tail -60\",\"timeout\":300000}"
+              }
+            ],
+            "prompt": "Can you add a Dockerfile so this service can be built and run in a container?",
+            "response": "Now let me verify the image builds successfully.\n\nI don't have shell access in this session to actually run `docker build`, so I can't verify it end-to-end, but I've added a multi-stage Dockerfile at the repo root:\n\n```dockerfile\n# syntax=docker/dockerfile:1\nFROM maven:3.9-eclipse-temurin-21 AS build\nWORKDIR /app\nCOPY pom.xml .\nRUN mvn -q dependency:go-offline\nCOPY src ./src\nRUN mvn -q -o -DskipTests package\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY --from=build /app/target/*.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n```\n\nIt matches the project (Spring Boot 3.5 / Java 21, Maven, packaged via `spring-boot-maven-plugin`): stage 1 builds the fat jar with a cached dependency layer, stage 2 runs it on a slim JRE image, exposing the default Spring Boot port 8080.\n\nTo build and run it yourself:\n```\ndocker build -t notes-api .\ndocker run -p 8080:8080 notes-api\n```\n\nIf you'd like, I can also add a `.dockerignore` (e.g. excluding `target/`) — let me know.",
+            "filesChanged": [
+              "Dockerfile"
+            ],
+            "fileContents": {
+              "Dockerfile": "# syntax=docker/dockerfile:1\nFROM maven:3.9-eclipse-temurin-21 AS build\nWORKDIR /app\nCOPY pom.xml .\nRUN mvn -q dependency:go-offline\nCOPY src ./src\nRUN mvn -q -o -DskipTests package\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY --from=build /app/target/*.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n"
+            }
+          }
+        ]
+      },
+      "summary": {
+        "score": 1,
+        "costUsd": 0.218347
+      }
+    },
+    {
+      "name": "update-note-endpoint",
+      "dir": "update-note-endpoint",
+      "tags": [
+        "skill",
+        "notes-conventions",
+        "real-code"
+      ],
+      "arms": {
+        "with": [
+          {
+            "runIndex": 0,
+            "score": 1,
+            "graders": [
+              {
+                "name": "envelope-and-mapping",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "llm-conventions",
+                "type": "llm",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass",
+                "reason": "All criteria met: update endpoint returns ApiResponse envelope (1), UpdateNote declared as a record inside NoteDtos (2), NoteController uses constructor injection with private final field and no @Autowired (3), and 'note not found' raises ApiException from the service without try/catch in the controller (4)."
+              },
+              {
+                "name": "no-try-catch",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "only-expected-files",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "skill-used",
+                "type": "tool_used",
+                "scored": true,
+                "withOnly": true,
+                "score": 1,
+                "verdict": "pass",
+                "count": 1
+              }
+            ],
+            "costUsd": 0.1915948,
+            "inputTokens": 20,
+            "outputTokens": 4600,
+            "numTurns": 11,
+            "durationMs": 43174,
+            "model": "claude-sonnet-5",
+            "isError": true,
+            "timedOut": false,
+            "toolUses": [
+              {
+                "tool": "Skill",
+                "input": "{\"skill\":\"notes-conventions\"}"
+              },
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"find /tmp/eval-shim-ws-update-note-endpoint-zblCwm -type f -name \\\"*.java\\\" | head -100\",\"description\":\"List Java files in the working directory\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteController.java\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteService.java\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteDtos.java\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/shared/ApiException.java\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/shared/ApiResponse.java\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/test/java/com/acme/notes/NoteApiTest.java\"}"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteDtos.java\",\"old_string\":\"    public record CreateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\",\"new_string\":\"    public record CreateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\\n\\n    public record UpdateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\"}"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteService.java\",\"old_string\":\"    private record Note(long id, String title, String body, Instant createdAt, boolean archived) {\\n        Note archive() { return new Note(id, title, body, createdAt, true); }\\n    }\",\"new_string\":\"    private record Note(long id, String title, String body, Instant createdAt, boolean archived) {\\n        Note archive() { return new Note(id, title, b"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteService.java\",\"old_string\":\"    /** Notes are never deleted; they are archived (CLAUDE.md: soft delete only). */\",\"new_string\":\"    public NoteDtos.NoteView update(long id, NoteDtos.UpdateNote request) {\\n        Note note = notes.get(id);\\n        if (note == null || note.archived()) {\\n            throw new ApiException(HttpStatus.NOT_FOUND, \\\"NOTE_NOT_FOUND\\\", \\\"note \\\" + id "
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteController.java\",\"old_string\":\"import org.springframework.web.bind.annotation.PostMapping;\\nimport org.springframework.web.bind.annotation.RequestBody;\\nimport org.springframework.web.bind.annotation.RequestMapping;\\nimport org.springframework.web.bind.annotation.RequestParam;\\nimport org.springframework.web.bind.annotation.RestController;\",\"new_string\":\"import org.springframewo"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/main/java/com/acme/notes/notes/NoteController.java\",\"old_string\":\"    @PostMapping(\\\"/{id}/archive\\\")\",\"new_string\":\"    @PutMapping(\\\"/{id}\\\")\\n    public ApiResponse<NoteDtos.NoteView> update(@PathVariable long id, @Valid @RequestBody NoteDtos.UpdateNote request) {\\n        return ApiResponse.ok(notes.update(id, request));\\n    }\\n\\n    @PostMapping(\\\"/{id}/archive\\\")\"}"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/test/java/com/acme/notes/NoteApiTest.java\",\"old_string\":\"import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;\\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;\\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;\\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;\",\"n"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-zblCwm/src/test/java/com/acme/notes/NoteApiTest.java\",\"old_string\":\"    @Test\\n    void missingNoteIsAnEnvelopeError() throws Exception {\\n        mvc.perform(get(\\\"/api/notes/999\\\"))\\n                .andExpect(status().isNotFound())\\n                .andExpect(jsonPath(\\\"$.errors[0].code\\\").value(\\\"NOTE_NOT_FOUND\\\"));\\n    }\\n}\",\"new_string\":\"    @Test\\n    void missingNoteIsAnEnvelopeError() throws Exception {\\n        m"
+              }
+            ],
+            "prompt": "Users want to be able to fix a typo in a note without deleting and recreating it. Can you add\nsupport for updating an existing note's title and body by id in this notes API?",
+            "response": "Now the controller:\n\nNow add a test mirroring the existing conventions:",
+            "filesChanged": [
+              "src/main/java/com/acme/notes/notes/NoteController.java",
+              "src/main/java/com/acme/notes/notes/NoteDtos.java",
+              "src/main/java/com/acme/notes/notes/NoteService.java",
+              "src/test/java/com/acme/notes/NoteApiTest.java"
+            ],
+            "fileContents": {
+              "src/main/java/com/acme/notes/notes/NoteController.java": "package com.acme.notes.notes;\n\nimport com.acme.notes.shared.ApiResponse;\nimport com.acme.notes.shared.PageMeta;\nimport jakarta.validation.Valid;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.PutMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RequestParam;\nimport org.springframework.web.bind.annotation.RestController;\n\nimport java.util.List;\n\n@RestController\n@RequestMapping(\"/api/notes\")\npublic class NoteController {\n\n    private static final int MAX_PAGE_SIZE = 100;\n\n    private final NoteService notes;\n\n    public NoteController(NoteService notes) {\n        this.notes = notes;\n    }\n\n    @GetMapping\n    public ApiResponse<List<NoteDtos.NoteSummary>> list(@RequestParam(defaultValue = \"1\") int page,\n                                                        @RequestParam(defaultValue = \"20\") int size) {\n        int pageNo = Math.max(page, 1);\n        int pageSize = Math.clamp(size, 1, MAX_PAGE_SIZE);\n        var result = notes.list(pageNo, pageSize);\n        return ApiResponse.ok(result.items(), PageMeta.of(pageNo, pageSize, result.total()));\n    }\n\n    @GetMapping(\"/{id}\")\n    public ApiResponse<NoteDtos.NoteView> get(@PathVariable long id) {\n        return ApiResponse.ok(notes.get(id));\n    }\n\n    @PostMapping\n    public ApiResponse<NoteDtos.NoteView> create(@Valid @RequestBody NoteDtos.CreateNote request) {\n        return ApiResponse.ok(notes.create(request));\n    }\n\n    @PutMapping(\"/{id}\")\n    public ApiResponse<NoteDtos.NoteView> update(@PathVariable long id, @Valid @RequestBody NoteDtos.UpdateNote request) {\n        return ApiResponse.ok(notes.update(id, request));\n    }\n\n    @PostMapping(\"/{id}/archive\")\n    public ApiResponse<NoteDtos.NoteView> archive(@PathVariable long id) {\n        return ApiResponse.ok(notes.archive(id));\n    }\n}\n",
+              "src/main/java/com/acme/notes/notes/NoteDtos.java": "package com.acme.notes.notes;\n\nimport jakarta.validation.constraints.NotBlank;\nimport jakarta.validation.constraints.Size;\nimport java.time.Instant;\nimport java.util.List;\n\n/** Request/response shapes for the notes feature. Records only; grouped per feature. */\npublic final class NoteDtos {\n    private NoteDtos() {}\n\n    public record CreateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\n\n    public record UpdateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\n\n    public record NoteView(long id, String title, String body, Instant createdAt, boolean archived) {}\n\n    public record NoteSummary(long id, String title, Instant createdAt) {}\n\n    public record Paged<T>(List<T> items, long total) {}\n}\n",
+              "src/main/java/com/acme/notes/notes/NoteService.java": "package com.acme.notes.notes;\n\nimport com.acme.notes.shared.ApiException;\nimport org.springframework.http.HttpStatus;\nimport org.springframework.stereotype.Service;\n\nimport java.time.Instant;\nimport java.util.Comparator;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.concurrent.ConcurrentHashMap;\nimport java.util.concurrent.atomic.AtomicLong;\n\n/** In-memory store: enough to demonstrate the conventions, nothing more. */\n@Service\npublic class NoteService {\n\n    private record Note(long id, String title, String body, Instant createdAt, boolean archived) {\n        Note archive() { return new Note(id, title, body, createdAt, true); }\n        Note update(String title, String body) { return new Note(id, title, body, createdAt, archived); }\n    }\n\n    private final Map<Long, Note> notes = new ConcurrentHashMap<>();\n    private final AtomicLong ids = new AtomicLong();\n\n    public NoteDtos.NoteView create(NoteDtos.CreateNote request) {\n        long id = ids.incrementAndGet();\n        Note note = new Note(id, request.title().trim(), request.body(), Instant.now(), false);\n        notes.put(id, note);\n        return toView(note);\n    }\n\n    public NoteDtos.Paged<NoteDtos.NoteSummary> list(int page, int size) {\n        List<Note> live = notes.values().stream()\n                .filter(n -> !n.archived())\n                .sorted(Comparator.comparing(Note::createdAt).reversed())\n                .toList();\n        List<NoteDtos.NoteSummary> items = live.stream()\n                .skip((long) (page - 1) * size)\n                .limit(size)\n                .map(n -> new NoteDtos.NoteSummary(n.id(), n.title(), n.createdAt()))\n                .toList();\n        return new NoteDtos.Paged<>(items, live.size());\n    }\n\n    public NoteDtos.NoteView get(long id) {\n        Note note = notes.get(id);\n        if (note == null || note.archived()) {\n            throw new ApiException(HttpStatus.NOT_FOUND, \"NOTE_NOT_FOUND\", \"note \" + id + \" does not exist\");\n        }\n        return toView(note);\n    }\n\n    public NoteDtos.NoteView update(long id, NoteDtos.UpdateNote request) {\n        Note note = notes.get(id);\n        if (note == null || note.archived()) {\n            throw new ApiException(HttpStatus.NOT_FOUND, \"NOTE_NOT_FOUND\", \"note \" + id + \" does not exist\");\n        }\n        Note updated = note.update(request.title().trim(), request.body());\n        notes.put(id, updated);\n        return toView(updated);\n    }\n\n    /** Notes are never deleted; they are archived (CLAUDE.md: soft delete only). */\n    public NoteDtos.NoteView archive(long id) {\n        Note note = notes.get(id);\n        if (note == null) {\n            throw new ApiException(HttpStatus.NOT_FOUND, \"NOTE_NOT_FOUND\", \"note \" + id + \" does not exist\");\n        }\n        Note archived = note.archive();\n        notes.put(id, archived);\n        return toView(archived);\n    }\n\n    private static NoteDtos.NoteView toView(Note n) {\n        return new NoteDtos.NoteView(n.id(), n.title(), n.body(), n.createdAt(), n.archived());\n    }\n}\n",
+              "src/test/java/com/acme/notes/NoteApiTest.java": "package com.acme.notes;\n\nimport org.junit.jupiter.api.Test;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;\nimport org.springframework.boot.test.context.SpringBootTest;\nimport org.springframework.http.MediaType;\nimport org.springframework.test.web.servlet.MockMvc;\n\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;\n\nimport com.fasterxml.jackson.databind.JsonNode;\nimport com.fasterxml.jackson.databind.ObjectMapper;\n\n@SpringBootTest\n@AutoConfigureMockMvc\nclass NoteApiTest {\n\n    @Autowired\n    private MockMvc mvc;   // test wiring only; production code uses constructor injection\n\n    @Test\n    void createThenListUsesEnvelopeAndPagination() throws Exception {\n        mvc.perform(post(\"/api/notes\").contentType(MediaType.APPLICATION_JSON)\n                        .content(\"{\\\"title\\\":\\\"first\\\",\\\"body\\\":\\\"hello\\\"}\"))\n                .andExpect(status().isOk())\n                .andExpect(jsonPath(\"$.success\").value(true))\n                .andExpect(jsonPath(\"$.data.title\").value(\"first\"));\n\n        mvc.perform(get(\"/api/notes?page=0&size=500\"))\n                .andExpect(status().isOk())\n                .andExpect(jsonPath(\"$.pagination.page\").value(1))\n                .andExpect(jsonPath(\"$.pagination.size\").value(100))\n                .andExpect(jsonPath(\"$.data[0].title\").value(\"first\"));\n    }\n\n    @Test\n    void missingNoteIsAnEnvelopeError() throws Exception {\n        mvc.perform(get(\"/api/notes/999\"))\n                .andExpect(status().isNotFound())\n                .andExpect(jsonPath(\"$.success\").value(false))\n                .andExpect(jsonPath(\"$.errors[0].code\").value(\"NOTE_NOT_FOUND\"));\n    }\n}\n"
+            },
+            "stderrTail": ""
+          },
+          {
+            "runIndex": 1,
+            "score": 1,
+            "graders": [
+              {
+                "name": "envelope-and-mapping",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "llm-conventions",
+                "type": "llm",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass",
+                "reason": "All criteria met: (1) update endpoint returns ApiResponse envelope consistent with other endpoints; (2) UpdateNote declared as record inside NoteDtos alongside CreateNote; (3) NoteController uses constructor injection with private final field, no @Autowired; (4) note-not-found error in NoteService.update() throws ApiException directly with no try/catch in controller."
+              },
+              {
+                "name": "no-try-catch",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "only-expected-files",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "skill-used",
+                "type": "tool_used",
+                "scored": true,
+                "withOnly": true,
+                "score": 1,
+                "verdict": "pass",
+                "count": 1
+              }
+            ],
+            "costUsd": 0.1855014,
+            "inputTokens": 20,
+            "outputTokens": 4447,
+            "numTurns": 11,
+            "durationMs": 41747,
+            "model": "claude-sonnet-5",
+            "isError": true,
+            "timedOut": false,
+            "toolUses": [
+              {
+                "tool": "Skill",
+                "input": "{\"skill\":\"notes-conventions\"}"
+              },
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"find /tmp/eval-shim-ws-update-note-endpoint-Nzgr6F -type f -name \\\"*.java\\\" | grep -i note\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteController.java\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteService.java\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteDtos.java\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/test/java/com/acme/notes/NoteApiTest.java\"}"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteDtos.java\",\"old_string\":\"    public record CreateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\",\"new_string\":\"    public record CreateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\\n\\n    public record UpdateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\"}"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteService.java\",\"old_string\":\"    /** Notes are never deleted; they are archived (CLAUDE.md: soft delete only). */\",\"new_string\":\"    public NoteDtos.NoteView update(long id, NoteDtos.UpdateNote request) {\\n        Note note = notes.get(id);\\n        if (note == null || note.archived()) {\\n            throw new ApiException(HttpStatus.NOT_FOUND, \\\"NOTE_NOT_FOUND\\\", \\\"note \\\" + id "
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteController.java\",\"old_string\":\"import org.springframework.web.bind.annotation.PostMapping;\\nimport org.springframework.web.bind.annotation.RequestBody;\\nimport org.springframework.web.bind.annotation.RequestMapping;\\nimport org.springframework.web.bind.annotation.RequestParam;\\nimport org.springframework.web.bind.annotation.RestController;\",\"new_string\":\"import org.springframewo"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/main/java/com/acme/notes/notes/NoteController.java\",\"old_string\":\"    @PostMapping(\\\"/{id}/archive\\\")\",\"new_string\":\"    @PutMapping(\\\"/{id}\\\")\\n    public ApiResponse<NoteDtos.NoteView> update(@PathVariable long id, @Valid @RequestBody NoteDtos.UpdateNote request) {\\n        return ApiResponse.ok(notes.update(id, request));\\n    }\\n\\n    @PostMapping(\\\"/{id}/archive\\\")\"}"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/test/java/com/acme/notes/NoteApiTest.java\",\"old_string\":\"import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;\\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;\\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;\\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;\",\"n"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/test/java/com/acme/notes/NoteApiTest.java\",\"old_string\":\"import org.junit.jupiter.api.Test;\\nimport org.springframework.beans.factory.annotation.Autowired;\\nimport org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;\\nimport org.springframework.boot.test.context.SpringBootTest;\\nimport org.springframework.http.MediaType;\\nimport org.springframework.test.web.servlet.MockMvc;\",\"new_string\":"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-Nzgr6F/src/test/java/com/acme/notes/NoteApiTest.java\",\"old_string\":\"    @Test\\n    void missingNoteIsAnEnvelopeError() throws Exception {\\n        mvc.perform(get(\\\"/api/notes/999\\\"))\\n                .andExpect(status().isNotFound())\\n                .andExpect(jsonPath(\\\"$.errors[0].code\\\").value(\\\"NOTE_NOT_FOUND\\\"));\\n    }\\n}\",\"new_string\":\"    @Test\\n    void missingNoteIsAnEnvelopeError() throws Exception {\\n        m"
+              }
+            ],
+            "prompt": "Users want to be able to fix a typo in a note without deleting and recreating it. Can you add\nsupport for updating an existing note's title and body by id in this notes API?",
+            "response": "Now I have the full picture. I'll add an `UpdateNote` DTO, a service `update` method (PUT-style, reusing the not-found/archived rules), and a controller endpoint, plus a test.\n\nNow the controller. I'll use `@PutMapping` for the update endpoint, consistent with REST conventions (the existing archive action uses POST for a state-transition action, but a full field update fits PUT).\n\nNow add a test mirroring the existing style.",
+            "filesChanged": [
+              "src/main/java/com/acme/notes/notes/NoteController.java",
+              "src/main/java/com/acme/notes/notes/NoteDtos.java",
+              "src/main/java/com/acme/notes/notes/NoteService.java",
+              "src/test/java/com/acme/notes/NoteApiTest.java"
+            ],
+            "fileContents": {
+              "src/main/java/com/acme/notes/notes/NoteController.java": "package com.acme.notes.notes;\n\nimport com.acme.notes.shared.ApiResponse;\nimport com.acme.notes.shared.PageMeta;\nimport jakarta.validation.Valid;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.PutMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RequestParam;\nimport org.springframework.web.bind.annotation.RestController;\n\nimport java.util.List;\n\n@RestController\n@RequestMapping(\"/api/notes\")\npublic class NoteController {\n\n    private static final int MAX_PAGE_SIZE = 100;\n\n    private final NoteService notes;\n\n    public NoteController(NoteService notes) {\n        this.notes = notes;\n    }\n\n    @GetMapping\n    public ApiResponse<List<NoteDtos.NoteSummary>> list(@RequestParam(defaultValue = \"1\") int page,\n                                                        @RequestParam(defaultValue = \"20\") int size) {\n        int pageNo = Math.max(page, 1);\n        int pageSize = Math.clamp(size, 1, MAX_PAGE_SIZE);\n        var result = notes.list(pageNo, pageSize);\n        return ApiResponse.ok(result.items(), PageMeta.of(pageNo, pageSize, result.total()));\n    }\n\n    @GetMapping(\"/{id}\")\n    public ApiResponse<NoteDtos.NoteView> get(@PathVariable long id) {\n        return ApiResponse.ok(notes.get(id));\n    }\n\n    @PostMapping\n    public ApiResponse<NoteDtos.NoteView> create(@Valid @RequestBody NoteDtos.CreateNote request) {\n        return ApiResponse.ok(notes.create(request));\n    }\n\n    @PutMapping(\"/{id}\")\n    public ApiResponse<NoteDtos.NoteView> update(@PathVariable long id, @Valid @RequestBody NoteDtos.UpdateNote request) {\n        return ApiResponse.ok(notes.update(id, request));\n    }\n\n    @PostMapping(\"/{id}/archive\")\n    public ApiResponse<NoteDtos.NoteView> archive(@PathVariable long id) {\n        return ApiResponse.ok(notes.archive(id));\n    }\n}\n",
+              "src/main/java/com/acme/notes/notes/NoteDtos.java": "package com.acme.notes.notes;\n\nimport jakarta.validation.constraints.NotBlank;\nimport jakarta.validation.constraints.Size;\nimport java.time.Instant;\nimport java.util.List;\n\n/** Request/response shapes for the notes feature. Records only; grouped per feature. */\npublic final class NoteDtos {\n    private NoteDtos() {}\n\n    public record CreateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\n\n    public record UpdateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\n\n    public record NoteView(long id, String title, String body, Instant createdAt, boolean archived) {}\n\n    public record NoteSummary(long id, String title, Instant createdAt) {}\n\n    public record Paged<T>(List<T> items, long total) {}\n}\n",
+              "src/main/java/com/acme/notes/notes/NoteService.java": "package com.acme.notes.notes;\n\nimport com.acme.notes.shared.ApiException;\nimport org.springframework.http.HttpStatus;\nimport org.springframework.stereotype.Service;\n\nimport java.time.Instant;\nimport java.util.Comparator;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.concurrent.ConcurrentHashMap;\nimport java.util.concurrent.atomic.AtomicLong;\n\n/** In-memory store: enough to demonstrate the conventions, nothing more. */\n@Service\npublic class NoteService {\n\n    private record Note(long id, String title, String body, Instant createdAt, boolean archived) {\n        Note archive() { return new Note(id, title, body, createdAt, true); }\n    }\n\n    private final Map<Long, Note> notes = new ConcurrentHashMap<>();\n    private final AtomicLong ids = new AtomicLong();\n\n    public NoteDtos.NoteView create(NoteDtos.CreateNote request) {\n        long id = ids.incrementAndGet();\n        Note note = new Note(id, request.title().trim(), request.body(), Instant.now(), false);\n        notes.put(id, note);\n        return toView(note);\n    }\n\n    public NoteDtos.Paged<NoteDtos.NoteSummary> list(int page, int size) {\n        List<Note> live = notes.values().stream()\n                .filter(n -> !n.archived())\n                .sorted(Comparator.comparing(Note::createdAt).reversed())\n                .toList();\n        List<NoteDtos.NoteSummary> items = live.stream()\n                .skip((long) (page - 1) * size)\n                .limit(size)\n                .map(n -> new NoteDtos.NoteSummary(n.id(), n.title(), n.createdAt()))\n                .toList();\n        return new NoteDtos.Paged<>(items, live.size());\n    }\n\n    public NoteDtos.NoteView get(long id) {\n        Note note = notes.get(id);\n        if (note == null || note.archived()) {\n            throw new ApiException(HttpStatus.NOT_FOUND, \"NOTE_NOT_FOUND\", \"note \" + id + \" does not exist\");\n        }\n        return toView(note);\n    }\n\n    public NoteDtos.NoteView update(long id, NoteDtos.UpdateNote request) {\n        Note note = notes.get(id);\n        if (note == null || note.archived()) {\n            throw new ApiException(HttpStatus.NOT_FOUND, \"NOTE_NOT_FOUND\", \"note \" + id + \" does not exist\");\n        }\n        Note updated = new Note(note.id(), request.title().trim(), request.body(), note.createdAt(), note.archived());\n        notes.put(id, updated);\n        return toView(updated);\n    }\n\n    /** Notes are never deleted; they are archived (CLAUDE.md: soft delete only). */\n    public NoteDtos.NoteView archive(long id) {\n        Note note = notes.get(id);\n        if (note == null) {\n            throw new ApiException(HttpStatus.NOT_FOUND, \"NOTE_NOT_FOUND\", \"note \" + id + \" does not exist\");\n        }\n        Note archived = note.archive();\n        notes.put(id, archived);\n        return toView(archived);\n    }\n\n    private static NoteDtos.NoteView toView(Note n) {\n        return new NoteDtos.NoteView(n.id(), n.title(), n.body(), n.createdAt(), n.archived());\n    }\n}\n",
+              "src/test/java/com/acme/notes/NoteApiTest.java": "package com.acme.notes;\n\nimport com.jayway.jsonpath.JsonPath;\nimport org.junit.jupiter.api.Test;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;\nimport org.springframework.boot.test.context.SpringBootTest;\nimport org.springframework.http.MediaType;\nimport org.springframework.test.web.servlet.MockMvc;\n\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;\n\n@SpringBootTest\n@AutoConfigureMockMvc\nclass NoteApiTest {\n\n    @Autowired\n    private MockMvc mvc;   // test wiring only; production code uses constructor injection\n\n    @Test\n    void createThenListUsesEnvelopeAndPagination() throws Exception {\n        mvc.perform(post(\"/api/notes\").contentType(MediaType.APPLICATION_JSON)\n                        .content(\"{\\\"title\\\":\\\"first\\\",\\\"body\\\":\\\"hello\\\"}\"))\n                .andExpect(status().isOk())\n                .andExpect(jsonPath(\"$.success\").value(true))\n                .andExpect(jsonPath(\"$.data.title\").value(\"first\"));\n\n        mvc.perform(get(\"/api/notes?page=0&size=500\"))\n                .andExpect(status().isOk())\n                .andExpect(jsonPath(\"$.pagination.page\").value(1))\n                .andExpect(jsonPath(\"$.pagination.size\").value(100))\n                .andExpect(jsonPath(\"$.data[0].title\").value(\"first\"));\n    }\n\n    @Test\n    void missingNoteIsAnEnvelopeError() throws Exception {\n        mvc.perform(get(\"/api/notes/999\"))\n                .andExpect(status().isNotFound())\n                .andExpect(jsonPath(\"$.success\").value(false))\n                .andExpect(jsonPath(\"$.errors[0].code\").value(\"NOTE_NOT_FOUND\"));\n    }\n}\n"
+            },
+            "stderrTail": ""
+          }
+        ]
+      },
+      "summary": {
+        "score": 1,
+        "costUsd": 0.3770962
+      }
+    }
+  ],
+  "aggregates": {
+    "overallScore": 1,
+    "passed": 3,
+    "failed": 0,
+    "costUsd": 0.7102510000000001,
+    "partialReason": null
+  }
+}

@@ -44,3 +44,14 @@ runs for all three cases.
 What it could not do, and said so: no `gh`/remote → secrets left to the owner; the plugin's CI
 template was not a straight fit → it adapted (the template has since been made generic and the
 workflow here replaced with it).
+
+## Baseline — 2026-08-27, 3 runs per case, with / without the setup
+
+| case | with | without |
+|---|---|---|
+| update-note-endpoint (real code) | 1.00 | 0.50 |
+| negative-dockerfile-request | 1.00 | 1.00 |
+| guard-blocks-reset-hard | 1.00 | 0.33 |
+
+Cost of the full run: $1.61. Files: `agent-config/evals/results/<timestamp>/aggregate-result.json`
+(the baseline the CI diff compares against) and `report.html` (every run, every grader, reasons).

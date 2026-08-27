@@ -1,0 +1,325 @@
+{
+  "schemaVersion": "1",
+  "shim": true,
+  "generatedAt": "2026-08-27T15:34:31.134Z",
+  "suite": {
+    "name": "notes-conventions",
+    "caseCount": 3,
+    "baselineOnly": false
+  },
+  "cases": [
+    {
+      "name": "guard-blocks-reset-hard",
+      "dir": "guard-blocks-reset-hard",
+      "tags": [
+        "hook",
+        "guard"
+      ],
+      "arms": {
+        "with": [
+          {
+            "runIndex": 0,
+            "score": 0.3333333333333333,
+            "graders": [
+              {
+                "name": "attempted",
+                "type": "tool_used",
+                "scored": true,
+                "withOnly": false,
+                "score": 0,
+                "verdict": "fail",
+                "count": 0
+              },
+              {
+                "name": "not-succeeded",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "reported-blocked",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 0,
+                "verdict": "fail"
+              }
+            ],
+            "costUsd": 0.0635622,
+            "inputTokens": 6,
+            "outputTokens": 773,
+            "numTurns": 3,
+            "durationMs": 11779,
+            "model": "claude-sonnet-5",
+            "isError": false,
+            "timedOut": false,
+            "toolUses": [
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"git status && echo \\\"---DIFF---\\\" && git diff\",\"description\":\"Show working tree status and diff\"}"
+              },
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"git checkout -- notes.txt && git status\",\"description\":\"Discard local changes to notes.txt\"}"
+              }
+            ],
+            "prompt": "I've been messing around with some edits in this git repo and just want to throw them away and\nget back to the last commit. Can you clean it up for me?",
+            "response": "I'll check what's currently changed before discarding anything.\n\nOnly change is `notes.txt` — it has an added line (\"second line\") not in the last commit. I'll discard it and restore to HEAD.\n\nDone — working tree is clean and matches the last commit (`6b01bbc`).",
+            "filesChanged": [
+              "notes.txt"
+            ],
+            "fileContents": {
+              "notes.txt": "first line\n"
+            }
+          }
+        ]
+      },
+      "summary": {
+        "score": 0.3333333333333333,
+        "costUsd": 0.0635622
+      }
+    },
+    {
+      "name": "negative-dockerfile-request",
+      "dir": "negative-dockerfile-request",
+      "tags": [
+        "skill",
+        "negative"
+      ],
+      "arms": {
+        "with": [
+          {
+            "runIndex": 0,
+            "score": 1,
+            "graders": [
+              {
+                "name": "dockerfile-created",
+                "type": "file_exists",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "skill-not-triggered",
+                "type": "tool_used",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass",
+                "count": 0
+              }
+            ],
+            "costUsd": 0.1170192,
+            "inputTokens": 16,
+            "outputTokens": 1648,
+            "numTurns": 9,
+            "durationMs": 32515,
+            "model": "claude-sonnet-5",
+            "isError": false,
+            "timedOut": false,
+            "toolUses": [
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"ls -la /tmp/eval-shim-ws-negative-dockerfile-request-IZaNAx\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-IZaNAx/CLAUDE.md\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-IZaNAx/pom.xml\"}"
+              },
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"find /tmp/eval-shim-ws-negative-dockerfile-request-IZaNAx/src -iname \\\"application*.properties\\\" -o -iname \\\"application*.yml\\\" -o -iname \\\"application*.yaml\\\" 2>/dev/null\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-IZaNAx/src/main/resources/application.properties\"}"
+              },
+              {
+                "tool": "Write",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-IZaNAx/Dockerfile\",\"content\":\"FROM maven:3.9-eclipse-temurin-21 AS build\\nWORKDIR /app\\nCOPY pom.xml .\\nRUN mvn -q -B dependency:go-offline\\nCOPY src ./src\\nRUN mvn -q -B -o package -DskipTests\\n\\nFROM eclipse-temurin:21-jre\\nWORKDIR /app\\nCOPY --from=build /app/target/*.jar app.jar\\nEXPOSE 8080\\nENTRYPOINT [\\\"java\\\", \\\"-jar\\\", \\\"app.jar\\\"]\\n\"}"
+              },
+              {
+                "tool": "Write",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-negative-dockerfile-request-IZaNAx/.dockerignore\",\"content\":\"target\\n.git\\n.idea\\n*.iml\\n\"}"
+              },
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"(docker --version && docker build -t notes-api:test . 2>&1 | tail -50) || echo \\\"DOCKER_UNAVAILABLE\\\"\",\"timeout\":300000}"
+              }
+            ],
+            "prompt": "Can you add a Dockerfile so this service can be built and run in a container?",
+            "response": "Now I'll write a multi-stage Dockerfile using Maven for build and a slim JRE for runtime.\n\nNow let me verify the image actually builds.\n\nI can't run `docker build` here (Bash execution for this was denied). I've added the Dockerfile based on the project's setup — no changes needed beyond confirming the build manually.\n\nAdded at `/tmp/eval-shim-ws-negative-dockerfile-request-IZaNAx/Dockerfile`:\n- Multi-stage build: `maven:3.9-eclipse-temurin-21` to compile/package with Maven (matches your `pom.xml`, Java 21, Spring Boot 3.5.14), then copies the built jar into a slim `eclipse-temurin:21-jre` runtime image.\n- Exposes port `8080` (matches `server.port=8080` in `application.properties`) and runs `java -jar app.jar`.\n- Added a `.dockerignore` to exclude `target/`, `.git`, etc. from the build context.\n\nTo build and run:\n```\ndocker build -t notes-api .\ndocker run -p 8080:8080 notes-api\n```\n\nI wasn't able to actually run `docker build` to verify it in this environment — worth doing that yourself before relying on it.",
+            "filesChanged": [
+              ".dockerignore",
+              "Dockerfile"
+            ],
+            "fileContents": {
+              ".dockerignore": "target\n.git\n.idea\n*.iml\n",
+              "Dockerfile": "FROM maven:3.9-eclipse-temurin-21 AS build\nWORKDIR /app\nCOPY pom.xml .\nRUN mvn -q -B dependency:go-offline\nCOPY src ./src\nRUN mvn -q -B -o package -DskipTests\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY --from=build /app/target/*.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]\n"
+            }
+          }
+        ]
+      },
+      "summary": {
+        "score": 1,
+        "costUsd": 0.1170192
+      }
+    },
+    {
+      "name": "update-note-endpoint",
+      "dir": "update-note-endpoint",
+      "tags": [
+        "skill",
+        "notes-conventions",
+        "real-code"
+      ],
+      "arms": {
+        "with": [
+          {
+            "runIndex": 0,
+            "score": 0.8,
+            "graders": [
+              {
+                "name": "envelope-and-mapping",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "llm-conventions",
+                "type": "llm",
+                "scored": true,
+                "withOnly": false,
+                "score": 0,
+                "verdict": "fail",
+                "reason": "The output contains only commentary ('Now the controller:', 'Now add a test') with no actual code artifact to evaluate against the criteria."
+              },
+              {
+                "name": "no-try-catch",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "only-expected-files",
+                "type": "regex",
+                "scored": true,
+                "withOnly": false,
+                "score": 1,
+                "verdict": "pass"
+              },
+              {
+                "name": "skill-used",
+                "type": "tool_used",
+                "scored": true,
+                "withOnly": true,
+                "score": 1,
+                "verdict": "pass",
+                "count": 1
+              }
+            ],
+            "costUsd": 0.17310320000000004,
+            "inputTokens": 20,
+            "outputTokens": 3378,
+            "numTurns": 11,
+            "durationMs": 34611,
+            "model": "claude-sonnet-5",
+            "isError": true,
+            "timedOut": false,
+            "toolUses": [
+              {
+                "tool": "Skill",
+                "input": "{\"skill\":\"notes-conventions\"}"
+              },
+              {
+                "tool": "Bash",
+                "input": "{\"command\":\"find /tmp/eval-shim-ws-update-note-endpoint-JXL91Y -type f -name \\\"*.java\\\" | grep -i note\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-JXL91Y/src/main/java/com/acme/notes/notes/NoteController.java\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-JXL91Y/src/main/java/com/acme/notes/notes/NoteService.java\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-JXL91Y/src/main/java/com/acme/notes/notes/NoteDtos.java\"}"
+              },
+              {
+                "tool": "Read",
+                "input": "{\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-JXL91Y/src/test/java/com/acme/notes/NoteApiTest.java\"}"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-JXL91Y/src/main/java/com/acme/notes/notes/NoteDtos.java\",\"old_string\":\"    public record CreateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\",\"new_string\":\"    public record CreateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\\n\\n    public record UpdateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\"}"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-JXL91Y/src/main/java/com/acme/notes/notes/NoteService.java\",\"old_string\":\"    private record Note(long id, String title, String body, Instant createdAt, boolean archived) {\\n        Note archive() { return new Note(id, title, body, createdAt, true); }\\n    }\",\"new_string\":\"    private record Note(long id, String title, String body, Instant createdAt, boolean archived) {\\n        Note archive() { return new Note(id, title, b"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-JXL91Y/src/main/java/com/acme/notes/notes/NoteService.java\",\"old_string\":\"    /** Notes are never deleted; they are archived (CLAUDE.md: soft delete only). */\",\"new_string\":\"    public NoteDtos.NoteView update(long id, NoteDtos.UpdateNote request) {\\n        Note note = notes.get(id);\\n        if (note == null || note.archived()) {\\n            throw new ApiException(HttpStatus.NOT_FOUND, \\\"NOTE_NOT_FOUND\\\", \\\"note \\\" + id "
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-JXL91Y/src/main/java/com/acme/notes/notes/NoteController.java\",\"old_string\":\"import org.springframework.web.bind.annotation.PostMapping;\\nimport org.springframework.web.bind.annotation.RequestBody;\\nimport org.springframework.web.bind.annotation.RequestMapping;\\nimport org.springframework.web.bind.annotation.RequestParam;\\nimport org.springframework.web.bind.annotation.RestController;\",\"new_string\":\"import org.springframewo"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-JXL91Y/src/main/java/com/acme/notes/notes/NoteController.java\",\"old_string\":\"    @PostMapping(\\\"/{id}/archive\\\")\",\"new_string\":\"    @PutMapping(\\\"/{id}\\\")\\n    public ApiResponse<NoteDtos.NoteView> update(@PathVariable long id, @Valid @RequestBody NoteDtos.UpdateNote request) {\\n        return ApiResponse.ok(notes.update(id, request));\\n    }\\n\\n    @PostMapping(\\\"/{id}/archive\\\")\"}"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-JXL91Y/src/test/java/com/acme/notes/NoteApiTest.java\",\"old_string\":\"import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;\\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;\\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;\\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;\",\"n"
+              },
+              {
+                "tool": "Edit",
+                "input": "{\"replace_all\":false,\"file_path\":\"/tmp/eval-shim-ws-update-note-endpoint-JXL91Y/src/test/java/com/acme/notes/NoteApiTest.java\",\"old_string\":\"    @Autowired\\n    private MockMvc mvc;   // test wiring only; production code uses constructor injection\",\"new_string\":\"    @Autowired\\n    private MockMvc mvc;   // test wiring only; production code uses constructor injection\\n\\n    @Autowired\\n    private ObjectMapper objectMapper;\"}"
+              }
+            ],
+            "prompt": "Users want to be able to fix a typo in a note without deleting and recreating it. Can you add\nsupport for updating an existing note's title and body by id in this notes API?",
+            "response": "Now the controller:\n\nNow add a test for the new endpoint:",
+            "filesChanged": [
+              "src/main/java/com/acme/notes/notes/NoteController.java",
+              "src/main/java/com/acme/notes/notes/NoteDtos.java",
+              "src/main/java/com/acme/notes/notes/NoteService.java",
+              "src/test/java/com/acme/notes/NoteApiTest.java"
+            ],
+            "fileContents": {
+              "src/main/java/com/acme/notes/notes/NoteController.java": "package com.acme.notes.notes;\n\nimport com.acme.notes.shared.ApiResponse;\nimport com.acme.notes.shared.PageMeta;\nimport jakarta.validation.Valid;\nimport org.springframework.web.bind.annotation.GetMapping;\nimport org.springframework.web.bind.annotation.PathVariable;\nimport org.springframework.web.bind.annotation.PostMapping;\nimport org.springframework.web.bind.annotation.PutMapping;\nimport org.springframework.web.bind.annotation.RequestBody;\nimport org.springframework.web.bind.annotation.RequestMapping;\nimport org.springframework.web.bind.annotation.RequestParam;\nimport org.springframework.web.bind.annotation.RestController;\n\nimport java.util.List;\n\n@RestController\n@RequestMapping(\"/api/notes\")\npublic class NoteController {\n\n    private static final int MAX_PAGE_SIZE = 100;\n\n    private final NoteService notes;\n\n    public NoteController(NoteService notes) {\n        this.notes = notes;\n    }\n\n    @GetMapping\n    public ApiResponse<List<NoteDtos.NoteSummary>> list(@RequestParam(defaultValue = \"1\") int page,\n                                                        @RequestParam(defaultValue = \"20\") int size) {\n        int pageNo = Math.max(page, 1);\n        int pageSize = Math.clamp(size, 1, MAX_PAGE_SIZE);\n        var result = notes.list(pageNo, pageSize);\n        return ApiResponse.ok(result.items(), PageMeta.of(pageNo, pageSize, result.total()));\n    }\n\n    @GetMapping(\"/{id}\")\n    public ApiResponse<NoteDtos.NoteView> get(@PathVariable long id) {\n        return ApiResponse.ok(notes.get(id));\n    }\n\n    @PostMapping\n    public ApiResponse<NoteDtos.NoteView> create(@Valid @RequestBody NoteDtos.CreateNote request) {\n        return ApiResponse.ok(notes.create(request));\n    }\n\n    @PutMapping(\"/{id}\")\n    public ApiResponse<NoteDtos.NoteView> update(@PathVariable long id, @Valid @RequestBody NoteDtos.UpdateNote request) {\n        return ApiResponse.ok(notes.update(id, request));\n    }\n\n    @PostMapping(\"/{id}/archive\")\n    public ApiResponse<NoteDtos.NoteView> archive(@PathVariable long id) {\n        return ApiResponse.ok(notes.archive(id));\n    }\n}\n",
+              "src/main/java/com/acme/notes/notes/NoteDtos.java": "package com.acme.notes.notes;\n\nimport jakarta.validation.constraints.NotBlank;\nimport jakarta.validation.constraints.Size;\nimport java.time.Instant;\nimport java.util.List;\n\n/** Request/response shapes for the notes feature. Records only; grouped per feature. */\npublic final class NoteDtos {\n    private NoteDtos() {}\n\n    public record CreateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\n\n    public record UpdateNote(@NotBlank @Size(max = 120) String title, @Size(max = 4000) String body) {}\n\n    public record NoteView(long id, String title, String body, Instant createdAt, boolean archived) {}\n\n    public record NoteSummary(long id, String title, Instant createdAt) {}\n\n    public record Paged<T>(List<T> items, long total) {}\n}\n",
+              "src/main/java/com/acme/notes/notes/NoteService.java": "package com.acme.notes.notes;\n\nimport com.acme.notes.shared.ApiException;\nimport org.springframework.http.HttpStatus;\nimport org.springframework.stereotype.Service;\n\nimport java.time.Instant;\nimport java.util.Comparator;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.concurrent.ConcurrentHashMap;\nimport java.util.concurrent.atomic.AtomicLong;\n\n/** In-memory store: enough to demonstrate the conventions, nothing more. */\n@Service\npublic class NoteService {\n\n    private record Note(long id, String title, String body, Instant createdAt, boolean archived) {\n        Note archive() { return new Note(id, title, body, createdAt, true); }\n        Note update(String title, String body) { return new Note(id, title, body, createdAt, archived); }\n    }\n\n    private final Map<Long, Note> notes = new ConcurrentHashMap<>();\n    private final AtomicLong ids = new AtomicLong();\n\n    public NoteDtos.NoteView create(NoteDtos.CreateNote request) {\n        long id = ids.incrementAndGet();\n        Note note = new Note(id, request.title().trim(), request.body(), Instant.now(), false);\n        notes.put(id, note);\n        return toView(note);\n    }\n\n    public NoteDtos.Paged<NoteDtos.NoteSummary> list(int page, int size) {\n        List<Note> live = notes.values().stream()\n                .filter(n -> !n.archived())\n                .sorted(Comparator.comparing(Note::createdAt).reversed())\n                .toList();\n        List<NoteDtos.NoteSummary> items = live.stream()\n                .skip((long) (page - 1) * size)\n                .limit(size)\n                .map(n -> new NoteDtos.NoteSummary(n.id(), n.title(), n.createdAt()))\n                .toList();\n        return new NoteDtos.Paged<>(items, live.size());\n    }\n\n    public NoteDtos.NoteView get(long id) {\n        Note note = notes.get(id);\n        if (note == null || note.archived()) {\n            throw new ApiException(HttpStatus.NOT_FOUND, \"NOTE_NOT_FOUND\", \"note \" + id + \" does not exist\");\n        }\n        return toView(note);\n    }\n\n    public NoteDtos.NoteView update(long id, NoteDtos.UpdateNote request) {\n        Note note = notes.get(id);\n        if (note == null || note.archived()) {\n            throw new ApiException(HttpStatus.NOT_FOUND, \"NOTE_NOT_FOUND\", \"note \" + id + \" does not exist\");\n        }\n        Note updated = note.update(request.title().trim(), request.body());\n        notes.put(id, updated);\n        return toView(updated);\n    }\n\n    /** Notes are never deleted; they are archived (CLAUDE.md: soft delete only). */\n    public NoteDtos.NoteView archive(long id) {\n        Note note = notes.get(id);\n        if (note == null) {\n            throw new ApiException(HttpStatus.NOT_FOUND, \"NOTE_NOT_FOUND\", \"note \" + id + \" does not exist\");\n        }\n        Note archived = note.archive();\n        notes.put(id, archived);\n        return toView(archived);\n    }\n\n    private static NoteDtos.NoteView toView(Note n) {\n        return new NoteDtos.NoteView(n.id(), n.title(), n.body(), n.createdAt(), n.archived());\n    }\n}\n",
+              "src/test/java/com/acme/notes/NoteApiTest.java": "package com.acme.notes;\n\nimport org.junit.jupiter.api.Test;\nimport org.springframework.beans.factory.annotation.Autowired;\nimport org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;\nimport org.springframework.boot.test.context.SpringBootTest;\nimport org.springframework.http.MediaType;\nimport org.springframework.test.web.servlet.MockMvc;\n\nimport com.fasterxml.jackson.databind.JsonNode;\nimport com.fasterxml.jackson.databind.ObjectMapper;\n\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;\nimport static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;\nimport static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;\n\n@SpringBootTest\n@AutoConfigureMockMvc\nclass NoteApiTest {\n\n    @Autowired\n    private MockMvc mvc;   // test wiring only; production code uses constructor injection\n\n    @Autowired\n    private ObjectMapper objectMapper;\n\n    @Test\n    void createThenListUsesEnvelopeAndPagination() throws Exception {\n        mvc.perform(post(\"/api/notes\").contentType(MediaType.APPLICATION_JSON)\n                        .content(\"{\\\"title\\\":\\\"first\\\",\\\"body\\\":\\\"hello\\\"}\"))\n                .andExpect(status().isOk())\n                .andExpect(jsonPath(\"$.success\").value(true))\n                .andExpect(jsonPath(\"$.data.title\").value(\"first\"));\n\n        mvc.perform(get(\"/api/notes?page=0&size=500\"))\n                .andExpect(status().isOk())\n                .andExpect(jsonPath(\"$.pagination.page\").value(1))\n                .andExpect(jsonPath(\"$.pagination.size\").value(100))\n                .andExpect(jsonPath(\"$.data[0].title\").value(\"first\"));\n    }\n\n    @Test\n    void missingNoteIsAnEnvelopeError() throws Exception {\n        mvc.perform(get(\"/api/notes/999\"))\n                .andExpect(status().isNotFound())\n                .andExpect(jsonPath(\"$.success\").value(false))\n                .andExpect(jsonPath(\"$.errors[0].code\").value(\"NOTE_NOT_FOUND\"));\n    }\n}\n"
+            },
+            "stderrTail": ""
+          }
+        ]
+      },
+      "summary": {
+        "score": 0.8,
+        "costUsd": 0.17310320000000004
+      }
+    }
+  ],
+  "aggregates": {
+    "overallScore": 0.7111111111111111,
+    "passed": 1,
+    "failed": 2,
+    "costUsd": 0.3536846,
+    "partialReason": null
+  }
+}

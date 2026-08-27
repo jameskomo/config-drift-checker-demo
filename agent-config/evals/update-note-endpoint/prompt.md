@@ -3,7 +3,7 @@ description: Proves the conventions skill and CLAUDE.md shape a real change to t
 name: update-note-endpoint
 tags: [skill, notes-conventions, real-code]
 runs: 3
-max_turns: 20
+max_turns: 30
 timeout_seconds: 900
 allowed_tools: [Read, Glob, Grep, Edit, Write]
 ---

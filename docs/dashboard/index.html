@@ -19,6 +19,8 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .strip b{color:var(--ink);font-weight:500}
 .big{font-size:22px;font-weight:600}.big.pass{color:var(--pass)}.big.fail{color:var(--fail)}
 .warn{color:var(--fail)}
+.note{color:var(--accent)}
+.snapshot{color:var(--muted)}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 18px;font-size:13.5px}
 .toolbar select,.toolbar input[type=search]{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--rule);border-radius:6px;padding:6px 10px}
 .toolbar label{display:inline-flex;gap:6px;align-items:center;color:var(--muted);cursor:pointer}
@@ -28,6 +30,9 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .case-head h2{font-size:16px;margin:0;letter-spacing:-.01em}
 .case-head .desc{color:var(--muted);font-size:13px;flex-basis:100%}
 .tags span{display:inline-block;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);border-radius:3px;padding:1px 6px}
+.issue-flag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:3px;margin-left:6px}
+.issue-flag.with{background:var(--fail-bg);color:var(--fail)}
+.issue-flag.without{background:var(--code);color:var(--accent)}
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--muted)}
 .dot.pass{background:var(--pass)}.dot.fail{background:var(--fail)}
 .score-badge{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;margin-left:auto}
@@ -40,7 +45,7 @@ a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 .checks td.t{color:var(--muted);font-family:"JetBrains Mono",monospace;font-size:11.5px;white-space:nowrap}
 .runs{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
 .run{border:1px solid var(--rule);border-left:4px solid var(--muted);border-radius:6px;padding:10px 12px;background:var(--bg)}
-.run.ok{border-left-color:var(--pass)}.run.bad{border-left-color:var(--fail)}
+.run.ok{border-left-color:var(--pass)}.run.bad{border-left-color:var(--fail)}.run.warn{border-left-color:var(--accent)}
 .run header{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-size:12.5px}
 .arm{font-family:"JetBrains Mono",monospace;font-size:10.5px;padding:1px 6px;border-radius:3px;background:var(--code)}
 .arm.without{opacity:.7}
@@ -67,9 +72,17 @@ pre.resp{white-space:pre-wrap;word-break:break-word;background:var(--code);borde
     <span>passed <b>{{ agg.passed }}</b> / {{ agg.passed + agg.failed }}</span>
     <span>cost <b>${{ agg.costUsd.toFixed(3) }}</b></span>
     <span>model <b>{{ suiteModel }}</b></span>
-    <span><b>{{ data.generatedAt && new Date(data.generatedAt).toLocaleString() }}</b></span>
-    <span class="warn" v-if="agg.erroredRuns">⚠ {{ agg.erroredRuns }} run(s) errored</span>
-    <span class="warn" v-if="agg.truncatedRuns">⚠ {{ agg.truncatedRuns }} run(s) hit max_turns</span>
+    <span class="snapshot" title="This dashboard shows one stored run, not a live feed. Refresh it after a new eval with scripts/sync-dashboard-data.mjs.">
+      snapshot from <b>{{ data.generatedAt && new Date(data.generatedAt).toLocaleString() }}</b>
+    </span>
+    <template v-if="issues.total">
+      <span class="warn" v-if="issues.errWith || issues.truncWith">
+        ⚠ {{ issues.errWith }} scored-run error(s), {{ issues.truncWith }} hit max_turns — these affect the score, open the case below
+      </span>
+      <span class="note" v-else>
+        ⓘ {{ issues.errWithout }} error(s), {{ issues.truncWithout }} hit max_turns — all in the "without plugin" baseline arm only, does not affect the score above
+      </span>
+    </template>
   </div>
 
   <div class="toolbar" v-if="data">
@@ -88,6 +101,8 @@ pre.resp{white-space:pre-wrap;word-break:break-word;background:var(--code);borde
         <span class="dot" :class="c.summary.score === 1 ? 'pass' : 'fail'"></span>
         <h2>{{ c.name }}</h2>
         <span class="tags"><span v-for="t in c.tags" :key="t">{{ t }}</span></span>
+        <span class="issue-flag with" v-if="caseIssueScope(c) === 'with'" title="A scored (with-plugin) run errored or hit max_turns">⚠ scored run issue</span>
+        <span class="issue-flag without" v-else-if="caseIssueScope(c) === 'without'" title="Only the without-plugin baseline arm errored or hit max_turns; doesn't affect this score">ⓘ baseline arm only</span>
         <span class="score-badge" :class="c.summary.score === 1 ? 'pass' : 'fail'">{{ fmtScore(c.summary.score) }}</span>
         <span class="delta" v-if="c.summary.baselineScore != null">
           without plugin {{ fmtScore(c.summary.baselineScore) }} · Δ {{ c.summary.delta >= 0 ? '+' : '' }}{{ fmtScore(c.summary.delta) }}
@@ -107,14 +122,14 @@ pre.resp{white-space:pre-wrap;word-break:break-word;background:var(--code);borde
         </details>
 
         <div class="runs" style="margin-top:12px">
-          <article class="run" :class="run.score === 1 ? 'ok' : 'bad'"
+          <article class="run" :class="runClass(run)"
                     v-for="run in visibleRuns(c)" :key="run.arm + run.runIndex">
             <header>
               <span class="arm" :class="run.arm">{{ run.arm }}</span>
               <b>run {{ run.runIndex + 1 }}</b>
               <span :style="{color: run.score === 1 ? 'var(--pass)' : 'var(--fail)'}">{{ fmtScore(run.score) }}</span>
               <span class="meta">{{ run.numTurns }} turns · ${{ run.costUsd.toFixed(3) }} · {{ (run.durationMs/1000).toFixed(0) }}s
-                <span v-if="run.truncated" class="warn">max_turns</span>
+                <span v-if="run.truncated" class="note">max_turns</span>
                 <span v-if="run.isError" class="warn">error</span>
               </span>
             </header>
@@ -162,10 +177,27 @@ createApp({
     onMounted(async () => {
       const res = await fetch("./data.json");
       data.value = await res.json();
-      for (const c of data.value.cases) open.value[c.name] = false;
+      for (const c of data.value.cases) open.value[c.name] = !!caseIssueScope(c);
     });
 
     const agg = computed(() => data.value?.aggregates ?? {});
+
+    function caseIssueScope(c) {
+      const bad = (r) => r.isError || r.truncated;
+      if ((c.arms.with || []).some(bad)) return "with";
+      if ((c.arms.without || []).some(bad)) return "without";
+      return null;
+    }
+
+    const issues = computed(() => {
+      const out = { errWith: 0, errWithout: 0, truncWith: 0, truncWithout: 0, total: 0 };
+      for (const c of data.value?.cases ?? []) {
+        for (const r of c.arms.with || []) { if (r.isError) out.errWith++; if (r.truncated) out.truncWith++; }
+        for (const r of c.arms.without || []) { if (r.isError) out.errWithout++; if (r.truncated) out.truncWithout++; }
+      }
+      out.total = out.errWith + out.errWithout + out.truncWith + out.truncWithout;
+      return out;
+    });
     const suiteName = computed(() => data.value?.suite?.name ?? "config-drift-checker");
     const suiteModel = computed(() => {
       const c = data.value?.cases?.[0];
@@ -206,9 +238,13 @@ createApp({
     function fmtScore(n) {
       return n == null ? "—" : n.toFixed(2);
     }
+    function runClass(run) {
+      if (run.score !== 1) return "bad";
+      return run.truncated || run.isError ? "warn" : "ok";
+    }
 
-    return { data, agg, suiteName, suiteModel, overallClass, allTags, filteredCases,
-             query, tagFilter, regressionsOnly, failingRunsOnly, open, toggle, fmtScore, visibleRuns };
+    return { data, agg, issues, caseIssueScope, suiteName, suiteModel, overallClass, allTags, filteredCases,
+             query, tagFilter, regressionsOnly, failingRunsOnly, open, toggle, fmtScore, visibleRuns, runClass };
   },
 }).mount("#app");
 </script>

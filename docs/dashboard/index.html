@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>config-drift-checker · dashboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#F4F6F8;--surface:#FFFFFF;--ink:#1A222D;--muted:#5B6672;--rule:#D6DCE3;--accent:#B85C1E;--pass:#2E7D4F;--fail:#B3362B;--pass-bg:#E6F2EA;--fail-bg:#F8E5E2;--code:#EDF0F3}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141922;--surface:#1B222D;--ink:#E6EAEF;--muted:#98A3B0;--rule:#2C3541;--accent:#E0823C;--pass:#5DBB84;--fail:#E06A5E;--pass-bg:#1B2E23;--fail-bg:#3A1F1C;--code:#0F141B}}
+:root[data-theme="dark"]{--bg:#141922;--surface:#1B222D;--ink:#E6EAEF;--muted:#98A3B0;--rule:#2C3541;--accent:#E0823C;--pass:#5DBB84;--fail:#E06A5E;--pass-bg:#1B2E23;--fail-bg:#3A1F1C;--code:#0F141B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 28px 80px}
+h1{font-size:24px;margin:0 0 4px;letter-spacing:-.01em}
+h1 small{font-weight:500;color:var(--muted);font-size:13px;margin-left:10px;letter-spacing:.04em;text-transform:uppercase}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.strip{display:flex;gap:26px;flex-wrap:wrap;align-items:center;font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--muted);margin:10px 0 20px}
+.strip b{color:var(--ink);font-weight:500}
+.big{font-size:22px;font-weight:600}.big.pass{color:var(--pass)}.big.fail{color:var(--fail)}
+.warn{color:var(--fail)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 18px;font-size:13.5px}
+.toolbar select,.toolbar input[type=search]{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--rule);border-radius:6px;padding:6px 10px}
+.toolbar label{display:inline-flex;gap:6px;align-items:center;color:var(--muted);cursor:pointer}
+.case{background:var(--surface);border:1px solid var(--rule);border-radius:8px;margin:0 0 16px;overflow:hidden}
+.case-head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding:14px 16px;cursor:pointer}
+.case-head:hover{background:var(--code)}
+.case-head h2{font-size:16px;margin:0;letter-spacing:-.01em}
+.case-head .desc{color:var(--muted);font-size:13px;flex-basis:100%}
+.tags span{display:inline-block;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);border-radius:3px;padding:1px 6px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--muted)}
+.dot.pass{background:var(--pass)}.dot.fail{background:var(--fail)}
+.score-badge{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;margin-left:auto}
+.score-badge.pass{color:var(--pass)}.score-badge.fail{color:var(--fail)}
+.delta{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted)}
+.case-body{padding:0 16px 16px;border-top:1px solid var(--rule)}
+.prompt{white-space:pre-wrap;background:var(--code);border-radius:4px;padding:10px;font-size:13px;margin:10px 0}
+.checks{border-collapse:collapse;width:100%;margin:8px 0 14px;font-size:13px}
+.checks td{padding:5px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+.checks td.t{color:var(--muted);font-family:"JetBrains Mono",monospace;font-size:11.5px;white-space:nowrap}
+.runs{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:10px}
+.run{border:1px solid var(--rule);border-left:4px solid var(--muted);border-radius:6px;padding:10px 12px;background:var(--bg)}
+.run.ok{border-left-color:var(--pass)}.run.bad{border-left-color:var(--fail)}
+.run header{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-size:12.5px}
+.arm{font-family:"JetBrains Mono",monospace;font-size:10.5px;padding:1px 6px;border-radius:3px;background:var(--code)}
+.arm.without{opacity:.7}
+.run .meta{color:var(--muted);font-size:11px;margin-left:auto}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.chip{font-size:11px;padding:1px 6px;border-radius:3px;background:var(--code)}
+.chip.pass{background:var(--pass-bg);color:var(--pass)}.chip.fail{background:var(--fail-bg);color:var(--fail)}
+details summary{cursor:pointer;font-size:12px;color:var(--muted);margin-top:4px}
+details summary:hover{color:var(--ink)}
+pre.resp{white-space:pre-wrap;word-break:break-word;background:var(--code);border-radius:4px;padding:8px;font-size:12px;max-height:280px;overflow:auto;margin:6px 0 0}
+.tools{margin:4px 0 0;padding-left:16px;font-size:11.5px;color:var(--muted)}
+.tools code{background:var(--code);border-radius:3px;padding:0 3px}
+.empty{color:var(--muted);padding:40px;text-align:center}
+.footer{color:var(--muted);font-size:12.5px;margin-top:30px}
+</style>
+</head>
+<body>
+<div id="app" class="wrap">
+
+  <h1>{{ suiteName }} <small>eval dashboard</small></h1>
+
+  <div class="strip" v-if="data">
+    <span class="big" :class="overallClass">{{ fmtScore(agg.overallScore) }}</span>
+    <span>passed <b>{{ agg.passed }}</b> / {{ agg.passed + agg.failed }}</span>
+    <span>cost <b>${{ agg.costUsd.toFixed(3) }}</b></span>
+    <span>model <b>{{ suiteModel }}</b></span>
+    <span><b>{{ data.generatedAt && new Date(data.generatedAt).toLocaleString() }}</b></span>
+    <span class="warn" v-if="agg.erroredRuns">⚠ {{ agg.erroredRuns }} run(s) errored</span>
+    <span class="warn" v-if="agg.truncatedRuns">⚠ {{ agg.truncatedRuns }} run(s) hit max_turns</span>
+  </div>
+
+  <div class="toolbar" v-if="data">
+    <input type="search" v-model="query" placeholder="Filter cases…">
+    <select v-model="tagFilter">
+      <option value="">All tags</option>
+      <option v-for="t in allTags" :key="t" :value="t">{{ t }}</option>
+    </select>
+    <label><input type="checkbox" v-model="regressionsOnly"> regressions only</label>
+    <label><input type="checkbox" v-model="failingRunsOnly"> failing runs only</label>
+  </div>
+
+  <div v-if="data">
+    <section class="case" v-for="c in filteredCases" :key="c.name">
+      <div class="case-head" @click="toggle(c.name)">
+        <span class="dot" :class="c.summary.score === 1 ? 'pass' : 'fail'"></span>
+        <h2>{{ c.name }}</h2>
+        <span class="tags"><span v-for="t in c.tags" :key="t">{{ t }}</span></span>
+        <span class="score-badge" :class="c.summary.score === 1 ? 'pass' : 'fail'">{{ fmtScore(c.summary.score) }}</span>
+        <span class="delta" v-if="c.summary.baselineScore != null">
+          without plugin {{ fmtScore(c.summary.baselineScore) }} · Δ {{ c.summary.delta >= 0 ? '+' : '' }}{{ fmtScore(c.summary.delta) }}
+        </span>
+        <span class="desc">{{ c.description }}</span>
+      </div>
+
+      <div class="case-body" v-if="open[c.name]">
+        <details open><summary>Prompt given to the agent</summary><pre class="prompt">{{ c.prompt }}</pre></details>
+        <details><summary>Checks ({{ c.graders.length }})</summary>
+          <table class="checks"><tbody>
+            <tr v-for="g in c.graders" :key="g.name">
+              <td class="t">{{ g.type }}</td>
+              <td><code>{{ g.name }}</code> — {{ g.rubric }}</td>
+            </tr>
+          </tbody></table>
+        </details>
+
+        <div class="runs" style="margin-top:12px">
+          <article class="run" :class="run.score === 1 ? 'ok' : 'bad'"
+                    v-for="run in visibleRuns(c)" :key="run.arm + run.runIndex">
+            <header>
+              <span class="arm" :class="run.arm">{{ run.arm }}</span>
+              <b>run {{ run.runIndex + 1 }}</b>
+              <span :style="{color: run.score === 1 ? 'var(--pass)' : 'var(--fail)'}">{{ fmtScore(run.score) }}</span>
+              <span class="meta">{{ run.numTurns }} turns · ${{ run.costUsd.toFixed(3) }} · {{ (run.durationMs/1000).toFixed(0) }}s
+                <span v-if="run.truncated" class="warn">max_turns</span>
+                <span v-if="run.isError" class="warn">error</span>
+              </span>
+            </header>
+            <div class="chips">
+              <span class="chip" :class="g.verdict" v-for="g in run.graders" :key="g.name" :title="g.type">
+                {{ g.verdict === 'pass' ? '✓' : '✗' }} {{ g.name }}
+              </span>
+            </div>
+            <details v-if="run.toolUses && run.toolUses.length">
+              <summary>Tool calls ({{ run.toolUses.length }})</summary>
+              <ol class="tools"><li v-for="(t,i) in run.toolUses" :key="i"><code>{{ t.tool }}</code> {{ t.input }}</li></ol>
+            </details>
+            <details v-if="run.response">
+              <summary>Response</summary>
+              <pre class="resp">{{ run.response }}</pre>
+            </details>
+          </article>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="empty" v-else>Loading results…</div>
+
+  <p class="footer" v-if="data">
+    Generated by <code>config-drift-checker</code> · schema {{ data.schemaVersion }} ·
+    <a href="../report.html">static report</a> ·
+    <a href="https://github.com/jameskomo/config-drift-checker">source</a>
+  </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3.4.31/dist/vue.global.prod.js"></script>
+<script>
+const { createApp, ref, computed, onMounted } = Vue;
+
+createApp({
+  setup() {
+    const data = ref(null);
+    const open = ref({});
+    const query = ref("");
+    const tagFilter = ref("");
+    const regressionsOnly = ref(false);
+    const failingRunsOnly = ref(false);
+
+    onMounted(async () => {
+      const res = await fetch("./data.json");
+      data.value = await res.json();
+      for (const c of data.value.cases) open.value[c.name] = false;
+    });
+
+    const agg = computed(() => data.value?.aggregates ?? {});
+    const suiteName = computed(() => data.value?.suite?.name ?? "config-drift-checker");
+    const suiteModel = computed(() => {
+      const c = data.value?.cases?.[0];
+      const r = c?.arms?.with?.[0];
+      return r?.model ?? "—";
+    });
+    const overallClass = computed(() => (agg.value.overallScore === 1 ? "pass" : "fail"));
+    const allTags = computed(() => {
+      const s = new Set();
+      (data.value?.cases ?? []).forEach((c) => (c.tags || []).forEach((t) => s.add(t)));
+      return [...s].sort();
+    });
+
+    const filteredCases = computed(() => {
+      if (!data.value) return [];
+      return data.value.cases.filter((c) => {
+        if (query.value && !c.name.toLowerCase().includes(query.value.toLowerCase()) &&
+            !(c.description || "").toLowerCase().includes(query.value.toLowerCase())) return false;
+        if (tagFilter.value && !(c.tags || []).includes(tagFilter.value)) return false;
+        if (regressionsOnly.value && !(c.summary.delta < 0 || c.summary.score < 1)) return false;
+        return true;
+      });
+    });
+
+    function runsFor(c) {
+      const withArm = (c.arms.with || []).map((r) => ({ ...r, arm: "with" }));
+      const withoutArm = (c.arms.without || []).map((r) => ({ ...r, arm: "without" }));
+      return [...withArm, ...withoutArm];
+    }
+    function visibleRuns(c) {
+      const runs = runsFor(c);
+      return failingRunsOnly.value ? runs.filter((r) => r.score < 1) : runs;
+    }
+
+    function toggle(name) {
+      open.value[name] = !open.value[name];
+    }
+    function fmtScore(n) {
+      return n == null ? "—" : n.toFixed(2);
+    }
+
+    return { data, agg, suiteName, suiteModel, overallClass, allTags, filteredCases,
+             query, tagFilter, regressionsOnly, failingRunsOnly, open, toggle, fmtScore, visibleRuns };
+  },
+}).mount("#app");
+</script>
+</body>
+</html>

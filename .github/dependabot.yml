@@ -3,6 +3,11 @@ updates:
   - package-ecosystem: maven
     directory: /
     schedule: { interval: weekly }
+    # This demo is deliberately pinned to Spring Boot 3.5 / Java 21; a major
+    # framework jump would silently change what the eval cases are testing.
+    ignore:
+      - dependency-name: org.springframework.boot:spring-boot-starter-parent
+        update-types: ['version-update:semver-major']
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: weekly }

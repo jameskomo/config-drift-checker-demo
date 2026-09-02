@@ -23,7 +23,7 @@ jobs:
     env:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}     # BYOK — agent runs bill to your key
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       # continue-on-error: an exhausted/low API key must never turn into a red commit
       # status — that reads as "the product is broken" to anyone looking at the repo.
       # The step below still surfaces it loudly in the run's own summary and logs.

@@ -50,11 +50,11 @@ Three views, all static, all from the `eval-results` branch that the Action push
   across Claude Code versions, the run list.
 - `docs/report.html` — the latest run's report: verdict, provenance stamp (model, Claude Code, track,
   cost), what moved, every run with grader reasons, tool calls and the response.
-- `docs/dashboard/` — a small Vue 3 (CDN, no build) drill-down into one run, filterable by case/tag.
-  The Action does not manage it; refresh its `data.json` by hand after a run you care about:
-  ```bash
-  node scripts/sync-dashboard-data.mjs   # rewrites docs/dashboard/data.json from the newest local run
-  # then copy docs/dashboard/{index.html,data.json} onto the eval-results branch and push
-  ```
+- `docs/dashboard/` — a small Vue 3 (CDN, no build) interactive drill-down: verdict, provenance
+  stamp, diff against the baseline (score and turns/cost/time), filters, three-state run cards with
+  grader reasons, tool calls and responses. It reads the **live** `../latest.json` and
+  `../baseline.json` the Action writes on every run, so it is always the latest run; `data.json` in
+  the folder is only a fallback for viewing the app somewhere those files don't exist
+  (`node scripts/sync-dashboard-data.mjs` refreshes it from the newest local run).
 
 See `docs/claude/README.md` for the walkthrough of how `setup` generated the cases.

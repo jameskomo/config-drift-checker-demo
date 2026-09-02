@@ -1,0 +1,19 @@
+{
+  "model": "claude-sonnet-5",
+  "harness": "2.1.258",
+  "greens": 1,
+  "lastRunAt": "2026-09-02T17:08:19.315Z",
+  "lastResult": "green",
+  "history": [
+    {
+      "at": "2026-09-02T17:08:19.315Z",
+      "green": true,
+      "model": "claude-sonnet-5",
+      "harness": "2.1.258",
+      "overall": 1,
+      "passed": 3,
+      "caseCount": 3,
+      "costUsd": 1.3639272999999998
+    }
+  ]
+}

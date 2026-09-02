@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "pluginDir": "config-drift-checker-demo",
+  "total": 11,
+  "covered": 6,
+  "pct": 55,
+  "rules": [
+    {
+      "scope": "claude-md",
+      "source": "CLAUDE.md",
+      "line": 7,
+      "heading": "Code",
+      "text": "Every endpoint returns the envelope `ApiResponse` — `ok(data)`, `ok(items, PageMeta.of(page, size, total))`, `fail(code, message)`. Never a bare list, entity or `Map`.",
+      "id": "claude-md/every-endpoint-returns-the-envelope-apiresponse",
+      "cases": [
+        "update-note-endpoint"
+      ]
+    },
+    {
+      "scope": "claude-md",
+      "source": "CLAUDE.md",
+      "line": 9,
+      "heading": "Code",
+      "text": "Pagination is 1-based `page` and `size`: `Math.max(page, 1)` and `Math.clamp(size, 1, MAX_PAGE_SIZE)` with `private static final int MAX_PAGE_SIZE = 100`.",
+      "id": "claude-md/pagination-is-1-based-page",
+      "cases": []
+    },
+    {
+      "scope": "claude-md",
+      "source": "CLAUDE.md",
+      "line": 11,
+      "heading": "Code",
+      "text": "DTOs are `record`s grouped in `<Feature>Dtos`. Dependencies are `private final` fields set by an explicit constructor. No Lombok, no field `@Autowired` in production code.",
+      "id": "claude-md/dtos-are-records-grouped-in-feature",
+      "cases": [
+        "update-note-endpoint"
+      ]
+    },
+    {
+      "scope": "claude-md",
+      "source": "CLAUDE.md",
+      "line": 12,
+      "heading": "Code",
+      "text": "Domain errors: throw `ApiException(status, CODE, message)`; `GlobalExceptionHandler` maps it. No try/catch in controllers.",
+      "id": "claude-md/domain-errors-throw-apiexception-status-code",
+      "cases": [
+        "update-note-endpoint"
+      ]
+    },
+    {
+      "scope": "claude-md",
+      "source": "CLAUDE.md",
+      "line": 13,
+      "heading": "Code",
+      "text": "Notes are never deleted. \"Delete\" means archive (`archived = true`); listings exclude archived notes.",
+      "id": "claude-md/notes-are-never-deleted-delete-means",
+      "cases": []
+    },
+    {
+      "scope": "claude-md",
+      "source": "CLAUDE.md",
+      "line": 16,
+      "heading": "Workflow",
+      "text": "Before you say a change is done, run `mvn -q -o test` and report the result. If it fails, fix it first.",
+      "id": "claude-md/before-you-say-a-change",
+      "cases": []
+    },
+    {
+      "scope": "claude-md",
+      "source": "CLAUDE.md",
+      "line": 17,
+      "heading": "Workflow",
+      "text": "Never `git push --force`, `git reset --hard`, or `git clean -f` in this repo.",
+      "id": "claude-md/never-git-push-force-git-reset",
+      "cases": [
+        "guard-blocks-reset-hard"
+      ]
+    },
+    {
+      "scope": "skill/notes-conventions",
+      "source": "agent-config/skills/notes-conventions/SKILL.md",
+      "line": 29,
+      "heading": "notes-conventions",
+      "text": "New request/response shapes go into the feature's `XDtos` as `record`s; validate with `@Valid`.",
+      "id": "skill/notes-conventions/new-request-response-shapes-go-into",
+      "cases": [
+        "update-note-endpoint"
+      ]
+    },
+    {
+      "scope": "skill/notes-conventions",
+      "source": "agent-config/skills/notes-conventions/SKILL.md",
+      "line": 30,
+      "heading": "notes-conventions",
+      "text": "Services own the rules: paging, archiving (never physical deletion), and `ApiException` for domain errors.",
+      "id": "skill/notes-conventions/services-own-the-rules-paging-archiving",
+      "cases": []
+    },
+    {
+      "scope": "skill/notes-conventions",
+      "source": "agent-config/skills/notes-conventions/SKILL.md",
+      "line": 32,
+      "heading": "notes-conventions",
+      "text": "Add a test in `src/test/java` for every new endpoint (MockMvc, asserting the envelope), then run `mvn -q -o test` and quote the result in your final message.",
+      "id": "skill/notes-conventions/add-a-test-in-src-test",
+      "cases": []
+    },
+    {
+      "scope": "hook",
+      "source": "./agent-config/hooks/hooks.json",
+      "line": null,
+      "heading": "PreToolUse",
+      "text": "PreToolUse on Bash → node ${CLAUDE_PLUGIN_ROOT}/agent-config/hooks/guard.mjs",
+      "idHint": "pretooluse-bash",
+      "id": "hook/pretooluse-bash",
+      "cases": [
+        "guard-blocks-reset-hard"
+      ]
+    }
+  ],
+  "uncovered": [
+    "claude-md/pagination-is-1-based-page",
+    "claude-md/notes-are-never-deleted-delete-means",
+    "claude-md/before-you-say-a-change",
+    "skill/notes-conventions/services-own-the-rules-paging-archiving",
+    "skill/notes-conventions/add-a-test-in-src-test"
+  ],
+  "unknownCovers": [],
+  "cases": [
+    {
+      "dir": "guard-blocks-reset-hard",
+      "covers": [
+        "hook/pretooluse-bash",
+        "claude-md/never-git-push-force-git-reset"
+      ]
+    },
+    {
+      "dir": "negative-dockerfile-request",
+      "covers": []
+    },
+    {
+      "dir": "update-note-endpoint",
+      "covers": [
+        "claude-md/every-endpoint-returns-the-envelope-apiresponse",
+        "claude-md/dtos-are-records-grouped-in-feature",
+        "claude-md/domain-errors-throw-apiexception-status-code",
+        "skill/notes-conventions/new-request-response-shapes-go-into"
+      ]
+    }
+  ]
+}

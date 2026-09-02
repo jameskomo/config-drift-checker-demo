@@ -1,17 +1,19 @@
 name: config-drift-checker
-# On demand + on explicit config/code changes only — no cron/release-watch here, so this
-# never spends API credit unattended in the background. Run it manually from the Actions
-# tab (Run workflow) whenever you want to check against the latest Claude Code.
+# Pinned track on push/PR to the setup; either track on demand. No schedule here on purpose — the
+# product repo's own suite carries the scheduled canary — and .cdc.yml caps this repo at $3/month:
+# the Action's gate refuses to start a run past that and says so in the job summary.
 on:
   push:
     branches: [main]
-    paths: ['CLAUDE.md', '.claude-plugin/**', 'agent-config/**', 'src/**']
+    paths: ['CLAUDE.md', '.claude-plugin/**', '.cdc.yml', 'agent-config/**', 'src/**']
   pull_request:
-    paths: ['CLAUDE.md', '.claude-plugin/**', 'agent-config/**', 'src/**']
+    paths: ['CLAUDE.md', '.claude-plugin/**', '.cdc.yml', 'agent-config/**', 'src/**']
   workflow_dispatch:
     inputs:
-      promote-baseline: { description: 'Overwrite baseline with this run', type: boolean, default: false }
+      track:            { description: 'pinned | canary', default: 'pinned' }
+      promote-baseline: { description: 'Overwrite baseline with this run (pinned track)', type: boolean, default: false }
       ablation:         { description: 'with-without | none', default: 'none' }
+      force:            { description: 'Skip the budget gate', type: boolean, default: false }
 
 permissions: { contents: write, pull-requests: write }
 concurrency: { group: config-drift-checker, cancel-in-progress: false }
@@ -21,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}     # BYOK — agent runs bill to your key
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}     # BYOK — agent runs bill to your key, within .cdc.yml budget
     steps:
       - uses: actions/checkout@v7
       # continue-on-error: an exhausted/low API key must never turn into a red commit
@@ -32,8 +34,10 @@ jobs:
         continue-on-error: true
         with:
           plugin-dir: .                      # the repo root is the plugin (.claude-plugin/plugin.json)
+          track: ${{ inputs.track || 'pinned' }}
           ablation: ${{ inputs.ablation || 'none' }}
           promote-baseline: ${{ inputs.promote-baseline || 'false' }}
+          force: ${{ inputs.force || 'false' }}
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
       - name: Surface a failed eval step without failing the pipeline
         if: always() && steps.eval.outcome == 'failure'

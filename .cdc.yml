@@ -1,0 +1,24 @@
+# config-drift-checker — tracks, budgets, thresholds for this repo's agent setup.
+# Docs: https://github.com/jameskomo/config-drift-checker/blob/main/docs/user-guide.md#cdcyml
+track: pinned
+model:
+  pinned: claude-sonnet-5   # what the stored baseline was measured on
+  canary: sonnet            # the alias developers actually get; resolved at run time
+harness:
+  pinned: 2.1.258           # @anthropic-ai/claude-code version the baseline is measured on
+  canary: latest
+judge_model: haiku
+canary:
+  runs: 1
+  expand_on_deviation: 2
+  promote_after: 2
+  min_interval_hours: 72
+thresholds:
+  score: 0.15
+  turns: 0.5
+  cost: 0.5
+  duration: 0.5
+fail_on: [score]
+budget:
+  per_run_usd: 1.5
+  per_month_usd: 3          # this demo runs on push/PR and on demand only; the product repo carries the canary

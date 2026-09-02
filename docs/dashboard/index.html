@@ -200,11 +200,13 @@ createApp({
     }));
 
     const verdict = computed(() => {
-      const a = agg.value, e = a.erroredRuns ?? 0, R = rows.value;
+      const a = agg.value, R = rows.value;
+      // Only errors in the scored (with-plugin) arm make the headline; without-arm errors never move the score.
+      const withRuns = R.flatMap((r) => r.c.arms?.with ?? []), e = withRuns.filter((r) => r.isError).length, eWithout = R.flatMap((r) => r.c.arms?.without ?? []).filter((r) => r.isError).length;
       const regressed = R.filter((r) => r.status === 'regressed').length, failing = R.filter((r) => r.status === 'fail').length, flagged = R.filter((r) => r.flags.length).length, improved = R.filter((r) => r.status === 'improved').length;
       let v;
-      if (e && e === a.totalRuns) v = { tone: 'fail', mark: '■', headline: 'Nothing ran', lede: `Every agent run errored: ${a.partialReason ?? ''}. Usually no credit on the key, or a Claude Code startup failure.` };
-      else if (e) v = { tone: 'fail', mark: '■', headline: `${e} of ${a.totalRuns} runs errored`, lede: `${a.partialReason ?? ''} Scores are partial.` };
+      if (e && e === withRuns.length) v = { tone: 'fail', mark: '■', headline: 'Nothing ran', lede: `Every scored run errored: ${a.partialReason ?? ''}. Usually no credit on the key, or a Claude Code startup failure.` };
+      else if (e) v = { tone: 'fail', mark: '■', headline: `${e} of ${withRuns.length} scored runs errored`, lede: `${a.partialReason ?? ''} Scores are partial.` };
       else if (base.value && regressed) v = { tone: 'fail', mark: '▼', headline: `${regressed} case${regressed === 1 ? '' : 's'} regressed vs baseline`, lede: 'Open the red cases: each failing run shows which check failed and why. Classify before you fix — refused before acting, skill/hook did not fire, wrong thing, or grader wrong.' };
       else if (!base.value && failing) v = { tone: 'fail', mark: '▼', headline: `${failing} case${failing === 1 ? '' : 's'} below 1.00`, lede: 'No baseline to compare with. Read the failing runs, fix the setup or the grader, then promote a baseline.' };
       else if (base.value && flagged) v = { tone: 'warn', mark: '◆', headline: `No regressions · ${flagged} efficiency drift${flagged === 1 ? '' : 's'}`, lede: 'Every case still passes, but the agent needed noticeably more turns, cost or time than the baseline.' };
@@ -212,7 +214,7 @@ createApp({
       else v = { tone: a.overallScore === 1 ? 'pass' : 'warn', mark: '●', headline: a.overallScore === 1 ? 'All cases pass' : 'Below 1.00', lede: 'This run has no earlier baseline to diff against; scores are absolute.' };
       const withIssues = R.filter((r) => r.issueScope === 'with').length, withoutIssues = R.filter((r) => r.issueScope === 'without').length;
       if (withIssues) v.lede += ` ${withIssues} case${withIssues === 1 ? '' : 's'} had a scored run error or hit max_turns — opened below.`;
-      else if (withoutIssues) v.lede += ` Errors/max_turns occurred only in the "without plugin" arm, which does not affect the score.`;
+      else if (withoutIssues) v.lede += ` ${eWithout ? eWithout + ' error' + (eWithout === 1 ? '' : 's') + ' and some' : 'Some'} max_turns occurred only in the "without plugin" comparison arm, which never affects the score.`;
       if (a.budget?.exceeded) v.lede += ` The per-run budget cap ($${a.budget.capUsd}) stopped this run early; ${a.budget.skippedRuns} planned run(s) did not start.`;
       return v;
     });

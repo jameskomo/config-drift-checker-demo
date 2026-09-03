@@ -27,7 +27,7 @@ jobs:
       # is deliberately NOT passed — if both are set the key wins and runs bill prepaid credit.
       CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       # continue-on-error: an exhausted/low API key must never turn into a red commit
       # status — that reads as "the product is broken" to anyone looking at the repo.
       # The step below still surfaces it loudly in the run's own summary and logs.

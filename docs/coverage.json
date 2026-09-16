@@ -126,6 +126,10 @@
     "skill/notes-conventions/add-a-test-in-src-test"
   ],
   "unknownCovers": [],
+  "legacyCoversFrontmatter": [
+    "guard-blocks-reset-hard",
+    "update-note-endpoint"
+  ],
   "cases": [
     {
       "dir": "guard-blocks-reset-hard",

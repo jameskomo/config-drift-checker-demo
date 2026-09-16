@@ -1,8 +1,8 @@
 {
   "months": {
     "2026-09": {
-      "usd": 1.3639,
-      "runs": 1
+      "usd": 2.9714,
+      "runs": 2
     }
   },
   "runs": [
@@ -17,6 +17,18 @@
       "overall": 1,
       "errored": 0,
       "runUrl": "https://github.com/jameskomo/config-drift-checker-demo/actions/runs/33658567464"
+    },
+    {
+      "at": "2026-09-16T14:27:04.167Z",
+      "track": "pinned",
+      "usd": 1.6075,
+      "harness": "2.1.258",
+      "models": [
+        "claude-sonnet-5"
+      ],
+      "overall": 1,
+      "errored": 0,
+      "runUrl": "https://github.com/jameskomo/config-drift-checker-demo/actions/runs/35107851743"
     }
   ]
 }

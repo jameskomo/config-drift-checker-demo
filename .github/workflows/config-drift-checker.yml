@@ -31,7 +31,7 @@ jobs:
       # continue-on-error: an exhausted/low API key must never turn into a red commit
       # status — that reads as "the product is broken" to anyone looking at the repo.
       # The step below still surfaces it loudly in the run's own summary and logs.
-      - uses: jameskomo/config-drift-checker/action@v0
+      - uses: jameskomo/config-drift-checker/action@v1
         id: eval
         continue-on-error: true
         with:

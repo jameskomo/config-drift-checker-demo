@@ -1,0 +1,34 @@
+{
+  "suite": "jameskomo/config-drift-checker-demo",
+  "generatedAt": "2026-10-24T10:04:05.121Z",
+  "pageUrl": "https://jameskomo.github.io/config-drift-checker-demo",
+  "streak": {
+    "runs": 4,
+    "versions": 2,
+    "days": 58
+  },
+  "verdicts": [
+    {
+      "claudeCode": "2.1.258",
+      "at": "2026-09-16T14:27:02.039Z",
+      "track": "pinned",
+      "runner": "shim",
+      "verdict": "held",
+      "wobble": false,
+      "overall": 1,
+      "casesMoved": [],
+      "report": "history/20260916T142702Z-cc2.1.258-shim-pinned.html"
+    },
+    {
+      "claudeCode": "2.1.247",
+      "at": "2026-08-27T18:54:06.765Z",
+      "track": null,
+      "runner": "shim",
+      "verdict": "held",
+      "wobble": false,
+      "overall": 1,
+      "casesMoved": [],
+      "report": "history/20260827T190106Z-cc2.1.247-shim.html"
+    }
+  ]
+}
